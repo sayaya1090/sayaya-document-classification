@@ -1,0 +1,59 @@
+plugins {
+    id "org.wisepersist.gwt" version "1.1.0"
+}
+apply plugin: "java"
+apply plugin: "gwt-base"
+apply plugin: "maven-publish"
+
+group "net.sayaya"
+archivesBaseName = "document-classification-data"
+version "1.0"
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.jboss.elemento:elemento-core:1.0.3")
+    implementation("com.google.jsinterop:jsinterop-annotations:2.0.0")
+    compileOnly("org.projectlombok:lombok:1.18.16")
+    annotationProcessor('org.projectlombok:lombok:1.18.16')
+}
+
+gwt {
+    gwtVersion = "2.9.0"
+    minHeapSize = "1024M"
+    maxHeapSize = "2048M"
+    jsInteropExports.setGenerate(true)
+    compiler {
+        localWorkers = 12
+        disableClassMetadata = true
+        disableCastChecking = true
+    }
+}
+
+compileGwt {
+    minHeapSize = "2048M"
+    maxHeapSize = "4096M"
+    jvmArgs "-XX:ReservedCodeCacheSize=512M","-Xss2M","-javaagent:lib/lombok-1.18.16.jar=ECJ", "-generateJsInteropExport"
+}
+
+jar {
+    from sourceSets.main.allSource
+    archiveName "${archivesBaseName}.jar"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = "net.sayaya"
+            artifactId = "document-classification-data"
+            version = 1.0
+            from components.java
+        }
+    }
+}
