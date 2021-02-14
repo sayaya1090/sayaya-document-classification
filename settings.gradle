@@ -1,3 +1,3 @@
 rootProject.name = 'sayaya-document-classification'
-include 'data'
+include 'data', 'gateway', 'modeler', 'modeler-ui', 'tester', 'tester-ui'
 

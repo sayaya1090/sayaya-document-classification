@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="net.sayaya.document.modeler">
+	<inherits name='net.sayaya.UI'/>
+	<source path="client"/>
+	<entry-point class='net.sayaya.document.client.Application'/>
+	<collapse-all-properties/>
+</module>

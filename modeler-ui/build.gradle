@@ -1,0 +1,44 @@
+plugins {
+    id "org.wisepersist.gwt" version "1.1.10"
+    id "java"
+    id "war"
+}
+apply plugin: 'gwt'
+
+group = "net.sayaya"
+version = "1.0"
+java.sourceCompatibility = JavaVersion.VERSION_11
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+dependencies {
+    implementation("org.jboss.elemento:elemento-core:1.0.3")
+    implementation("com.google.elemental2:elemental2-svg:1.1.0")
+    implementation('com.google.gwt:gwt-user:2.9.0')
+    implementation('com.google.gwt:gwt-dev:2.9.0')
+    implementation('net.sayaya:ui:3.0')
+    compileOnly("org.projectlombok:lombok:1.18.16")
+    annotationProcessor("org.projectlombok:lombok:1.18.16")
+}
+gwt {
+    gwt.modules "net.sayaya.document.Modeler"
+    gwtVersion = "2.9.0"
+    gwt.extraJvmArgs = ["-XX:ReservedCodeCacheSize=512M","-Xss2M","-javaagent:../lib/lombok-1.18.16.jar=ECJ"]
+    minHeapSize = "1024M"
+    maxHeapSize = "2048M"
+    jsInteropExports.setGenerate(true)
+}
+gwtDev {
+    port 12345
+    codeServerPort 12346
+    war file("src/main/webapp")
+}
+war {
+    archiveFileName = "sayaya-document-classification-modeler-ui.war"
+}
+clean.doFirst {
+    delete "build/"
+}

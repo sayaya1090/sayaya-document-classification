@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: model-service
+  main:
+    web-application-type: reactive
+  cloud:
+    zookeeper:
+      connect-string: localhost:12181, localhost:22181, localhost:32181
+      discovery:
+        root: /sayaya-document-classification/services
+server:
+  port: 0
