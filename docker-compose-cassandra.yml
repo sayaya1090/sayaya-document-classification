@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  cassandra1:
+    image: cassandra:latest
+    hostname: cassandra1
+    container_name: cassandra1
+    ports:
+      - 17000:7000
+      - 19042:9042
+    volumes:
+      - /C/data/cassandra1/commitlog:/var/lib/cassandra/commitlog
+      - /C/data/cassandra1/hints:/var/lib/cassandra/hints
+      - /C/data/cassandra1/data:/var/lib/cassandra/data
+      - /C/data/cassandra1/saved_caches:/var/lib/cassandra/saved_caches
+      - /C/data/cassandra1/logs:/var/log/cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cluster
+      - CASSANDRA_NUM_TOKENS=8
+      - CASSANDRA_DC=dc1
+  #    - CASSANDRA_LISTEN_ADDRESS=192.168.1.2
+  #    - CASSANDRA_BROADCAST_ADDRESS=192.168.1.122
+  #    - CASSANDRA_BROADCAST_RPC_ADDRESS=192.168.1.122
+      - CASSANDRA_RACK=rack0
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - MAX_HEAP_SIZE=1G
+      - HEAP_NEWSIZE=200M

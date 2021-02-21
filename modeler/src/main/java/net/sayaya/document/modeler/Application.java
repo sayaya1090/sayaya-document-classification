@@ -6,23 +6,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableAsync
 public class Application implements AsyncConfigurer {
 	public static void main(String[] args) {
-		try {
-			String hostaddress =  InetAddress.getLocalHost().getHostAddress();
-			System.out.println("HostAddr:" + hostaddress);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
 		SpringApplication.run(Application.class, args);
 	}
 	@Override

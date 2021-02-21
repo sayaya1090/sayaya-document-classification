@@ -8,5 +8,14 @@ spring:
       connect-string: localhost:12181, localhost:22181, localhost:32181
       discovery:
         root: /sayaya-document-classification/services
+  data:
+    cassandra:
+      contact-points: localhost
+      port: 19042
+      keyspace-name: document_classification
+      username: cassandra
+      password: cassandra
+      local-datacenter: dc1
+      schema-action: CREATE_IF_NOT_EXISTS
 server:
   port: 0
