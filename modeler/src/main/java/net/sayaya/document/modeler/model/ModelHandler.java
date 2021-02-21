@@ -11,14 +11,13 @@ public class ModelHandler {
 	public ModelHandler(ModelRepository repo) {this.repo = repo;}
 
 	public Flux<Model> list() {
-		return Flux.fromStream(repo.findAll().stream()).map(ModelToDTO::map);
+		return repo.findAll().map(ModelToDTO::map);
 	}
 	public Mono<Model> create(String name) {
 		net.sayaya.document.modeler.model.Model model = new net.sayaya.document.modeler.model.Model().name(name);
-		return Mono.just(repo.save(model)).map(ModelToDTO::map);
+		return repo.save(model).map(ModelToDTO::map);
 	}
 	public Mono<Void> remove(String name) {
-		repo.deleteById(name);
-		return Mono.empty();
+		return repo.deleteById(name);
 	}
 }

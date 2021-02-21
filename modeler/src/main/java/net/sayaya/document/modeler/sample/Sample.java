@@ -2,23 +2,31 @@ package net.sayaya.document.modeler.sample;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table("sample")
 @Data
 @Accessors(fluent = true)
 public class Sample {
-	@PrimaryKey
-	@Column
-	UUID id;
+	@PrimaryKeyColumn(name = "model", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	String model;
+	@PrimaryKeyColumn(name = "id", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
+	UUID id = UUID.randomUUID();
+	@Column("create_time")
+	LocalDateTime createTime = LocalDateTime.now();
 	@Column
 	String name;
 	@Column
-	String size;
+	long size;
 	@Column
-	String page;
+	int page;
+	@Column
+	ByteBuffer data;
 }
