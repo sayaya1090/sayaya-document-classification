@@ -3,6 +3,7 @@
 	<inherits name='net.sayaya.UI'/>
 	<source path="client"/>
 	<source path="api" />
+	<source path="data" />
 	<entry-point class='net.sayaya.document.client.Application'/>
 	<collapse-all-properties/>
 </module>

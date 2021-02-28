@@ -21,18 +21,18 @@ dependencies {
     implementation('com.google.gwt:gwt-user:2.9.0')
     implementation('com.google.gwt:gwt-dev:2.9.0')
     implementation('net.sayaya:ui:3.0')
-    compileOnly("org.projectlombok:lombok:1.18.16")
+    implementation("org.projectlombok:lombok:1.18.16")
     annotationProcessor("org.projectlombok:lombok:1.18.16")
 }
 gwt {
     gwt.modules "net.sayaya.document.Modeler"
     gwtVersion = "2.9.0"
-    gwt.extraJvmArgs = ["-XX:ReservedCodeCacheSize=512M","-Xss2M","-javaagent:../lib/lombok-1.18.16.jar=ECJ"]
     minHeapSize = "1024M"
     maxHeapSize = "2048M"
     jsInteropExports.setGenerate(true)
 }
 gwtDev {
+    jvmArgs "-XX:ReservedCodeCacheSize=512M","-javaagent:lombok-1.18.16.jar=ECJ"
     port 12345
     codeServerPort 12346
     war file("src/main/webapp")

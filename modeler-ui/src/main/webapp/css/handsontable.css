@@ -1,0 +1,188 @@
+.handsontable th {
+	color: #222;
+	text-align: center;
+	font-weight: 700;
+	white-space: nowrap;
+	border-top:  #aaa;
+	transition: all 150ms;
+}
+.handsontable tr:first-child th, .handsontable tr:first-child td {
+	/* border-top: 1px solid #AAA; */
+	border-top: 1px solid transparent;
+}
+.handsontable tr:last-child th, .handsontable tr:last-child td {
+	/* border-bottom: 1px solid #AAA; */
+	border-bottom: 1px solid transparent;
+}
+.ht_clone_top tr:first-child th {
+	border-bottom: 1px solid #AAA !important;
+}
+.handsontable th:first-child, .handsontable th:nth-child(2), .handsontable td:first-of-type {
+	border-left: 1px solid #EEE;
+}
+.handsontable th:last-child {
+	border-right: 1px solid #EEE;
+	border-bottom: 1px solid #EEE;
+}
+.handsontable td:last-child {
+	border-right: 1px solid #EEE;
+}
+.handsontable.htRowHeaders thead tr th:nth-child(2) {
+	border-left: 1px solid #EEE;
+}
+.handsontable tbody th.ht__highlight, .handsontable thead th.ht__highlight {
+	background-color: #e5f6ff;
+}
+
+/* Select cursor */
+.handsontable .wtBorder.current {
+	z-index: 10;
+	transition: all 150ms;
+	background-color: var(--mdc-theme-secondary) !important;
+}
+/* Select range */
+.handsontable .wtBorder.area {
+	z-index: 8;
+	transition: all 150ms;
+	background-color: var(--mdc-theme-secondary) !important;
+}
+.handsontable td.area:before {
+	opacity: 0.1;
+	background-color: var(--mdc-theme-secondary);
+}
+
+.handsontable th, .handsontable td {
+	border-top-width: 0;
+	border-left-width: 0;
+	border-right: 1px solid transparent;
+	border-bottom: 1px solid #EEE;
+	height: 22px;
+	empty-cells: show;
+	font-size: 10px;
+	line-height: 21px;
+	padding: 0 4px 0 4px;
+	background-color: #FFF;
+	vertical-align: top;
+	overflow: hidden;
+	outline-width: 0;
+	white-space: pre-line;
+}
+/* Stripped*/
+.handsontable th {
+	border-right: 1px solid #EEE;
+}
+.handsontable tbody tr:nth-child(odd) th, .handsontable tbody tr:nth-child(odd) td {
+	background-color: rgba(244, 244 ,244, 0.8);
+}
+
+.handsontable th button.config {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	font-size: 10px;
+	padding: 0px;
+	width: 13px;
+	height: 13px;
+	color: rgba(240, 240 ,240, 0.8);
+	transition: all 300ms;
+}
+.handsontable th button.config:hover {
+	color: var(--mdc-theme-text-primary-on-background);
+}
+.handsontable th button.sort {
+	font-size: 20px;
+	padding: 2px;
+	width: 24px;
+	height: 24px;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+.handsontable td.changed {
+	box-shadow: 0 0 0 1px rgb(255, 200, 69) inset;
+}
+
+.handsontable .worklist-header {
+	font-family: "JetBrains Mono";
+	font-size: 11px;
+	font-weight: bold;
+	text-align: right;
+}
+
+.handsontable .recept-header {
+	font-family: "JetBrains Mono";
+	font-size: 11px;
+	font-weight: bold;
+	text-align: left;
+}
+
+/* Column DropDown */
+.handsontable td .mdc-select .mdc-select__anchor::before, .handsontable .dropdown-editor .mdc-select__anchor::before {
+	display: inline-block;
+	width: 0;
+	height: 0px;
+	content: "";
+	vertical-align: 0;
+}
+
+.handsontable td .mdc-select, .handsontable .dropdown-editor {
+	min-width: 50px;
+	display: block;
+	position: relative;
+}
+
+.handsontable td .mdc-select .mdc-select__anchor, .handsontable .dropdown-editor .mdc-select__anchor {
+	height: 22px;
+	display: flex;
+	align-items: center;
+}
+
+.handsontable td .mdc-select__selected-text, .handsontable .dropdown-editor .mdc-select__selected-text {
+	font-size: 10px;
+}
+
+.handsontable td .mdc-select:not(.mdc-select--disabled) .mdc-select__anchor,
+.handsontable td .mdc-select.mdc-select--disabled .mdc-select__anchor,
+.handsontable .dropdown-editor:not(.mdc-select--disabled) .mdc-select__anchor {
+	background-color: transparent;
+}
+.handsontable td .mdc-select.mdc-select--disabled .mdc-select__selected-text {
+	color: inherit;
+}
+.handsontable .mdc-select__dropdown-icon {
+	margin-right: 2px;
+	margin-bottom: 1px;
+}
+.handsontable td .mdc-select__dropdown-icon {
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+/* Column Radio */
+.handsontable td .select {
+	display:flex;
+	justify-content:space-around;
+	align-items: center;
+}
+.handsontable td .select .item {
+	min-width: 50px;
+}
+.handsontable td .select .item label {
+	margin-left: 4px;
+}
+.handsontable td .select .item .mdc-radio {
+	vertical-align: middle;
+	padding: 0px;
+	width: 14px;
+	height: 14px;
+}
+.handsontable td .select .item .mdc-radio .mdc-radio__native-control {
+	width: 14px;
+	height: 14px;
+}
+.handsontable td .select .item .mdc-radio .mdc-radio__background {
+	width: 14px;
+	height: 14px;
+}
+.handsontable td .mdc-radio .mdc-radio__inner-circle {
+	border-width: 7px;
+}
