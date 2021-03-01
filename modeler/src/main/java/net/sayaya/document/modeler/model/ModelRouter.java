@@ -1,9 +1,13 @@
 package net.sayaya.document.modeler.model;
 
+import net.sayaya.document.data.ModelMessage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -22,9 +26,10 @@ public class ModelRouter {
 	}
 	@Bean
 	public RouterFunction<ServerResponse> modelRouterInstance() {
-		return route(GET(""), this::findModels)
-				.andRoute(PUT("/{id}"), this::createModels)
-				.andRoute(DELETE("/{id}"), this::removeModels);
+		return route(GET("/models"), this::findModels)
+				.andRoute(PUT("/models/{id}"), this::createModels)
+				.andRoute(DELETE("/models/{id}"), this::removeModels)
+				.andRoute(GET("/models/changes"), this::subscribeModel);
 	}
 	private Mono<ServerResponse> findModels(ServerRequest request) {
 		return handler.list().collectList()
@@ -35,7 +40,7 @@ public class ModelRouter {
 	private Mono<ServerResponse> createModels(ServerRequest request) {
 		String id = request.pathVariable("id");
 		return handler.create(id)
-				.flatMap(obj->ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(obj))
+				.flatMap(obj->ServerResponse.ok().build())
 				.switchIfEmpty(ServerResponse.status(HttpStatus.CONFLICT).build())
 				.onErrorResume(e->ServerResponse.badRequest().bodyValue(e.getMessage()));
 	}
@@ -43,6 +48,17 @@ public class ModelRouter {
 		String id = request.pathVariable("id");
 		return handler.remove(id)
 				.flatMap(obj->ServerResponse.ok().build())
-				.onErrorResume(e->ServerResponse.badRequest().bodyValue(e.getMessage()));
+				.onErrorResume(e->{
+					e.printStackTrace();
+					return ServerResponse.badRequest().bodyValue(e.getMessage());
+				});
+	}
+	private Mono<ServerResponse> subscribeModel(ServerRequest request) {
+		return ServerResponse.ok().contentType(MediaType.TEXT_EVENT_STREAM)
+				.body(BodyInserters.fromServerSentEvents(handler.subscribe()
+						.map(msg->ServerSentEvent.builder(msg.data())
+								.event(msg.type().name())
+								.id(msg.data().name())
+								.build())));
 	}
 }

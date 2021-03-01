@@ -19,12 +19,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
     implementation("org.springframework.boot:spring-boot-starter-data-cassandra")
     implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
+    implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
 
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("io.springfox:springfox-swagger-ui")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.apache.kafka:kafka-streams-test-utils")
     testImplementation("io.projectreactor:reactor-test")
 }
 dependencyManagement {
@@ -35,31 +38,21 @@ dependencyManagement {
 configurations {
     all*.exclude group:'org.springframework.boot', module:'spring-boot-starter-logging'
 }
+/*
 task copyWebResources(type: Copy) {
     dependsOn ":modeler-ui:build"
     from(zipTree ('../modeler-ui/build/libs/sayaya-document-classification-modeler-ui.war')) {
-        include '**/*.js'
-        include '**/*.css'
-        include '**/*.png'
-        include '**/*.gif'
-        include '**/*.wav'
-        include '**/*.ogg'
-        include '**/*.svg'
-        include '**/*.ttf'
-        include '**/*.woff'
-        include '**/*.woff2'
-        include '**/*.eot'
-        include '*.html'
+
         includeEmptyDirs = false
     }
     into "src/main/resources/static"
 }
 processResources {
-    dependsOn copyWebResources
+   dependsOn copyWebResources
 }
 bootJar {
     archiveName "sayaya-document-classification-modeler.jar"
-}
+}*/
 clean.doFirst {
     delete "src/main/resources/static"
     delete "build/"

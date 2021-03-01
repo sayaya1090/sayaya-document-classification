@@ -5,9 +5,18 @@ spring:
     web-application-type: reactive
   cloud:
     zookeeper:
-      connect-string: localhost:12181, localhost:22181, localhost:32181
+      connect-string: localhost:22181
       discovery:
         root: /sayaya-document-classification/services
+    stream:
+      function:
+        definition: publish;broadcast
+        bindings:
+          publish-out-0: models
+          broadcast-in-0: models
+      kafka:
+        binder:
+          brokers: localhost
   data:
     cassandra:
       contact-points: localhost

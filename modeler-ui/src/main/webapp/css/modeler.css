@@ -142,16 +142,16 @@ a[href]:hover, a[href]:focus {
 	border-radius: 0 !important;
 	border-color: var(--mdc-theme-text-secondary-on-background) !important;
 }
-.button:last-of-type {
+.button:first-of-type {
 	border-top-left-radius: 5px !important;
 	border-bottom-left-radius: 5px !important;
 }
-.button:first-of-type {
+.button:last-of-type {
 	border-right: 1px solid !important;
 	border-top-right-radius: 5px !important;
 	border-bottom-right-radius: 5px !important;
 }
-.input:not(last-child) {
+.input:not(first-child) {
 	margin-left: -1px;
 }
 .input .mdc-notched-outline__leading {
@@ -163,7 +163,7 @@ a[href]:hover, a[href]:focus {
 	border-top-right-radius: 0px !important;
 	border-bottom-right-radius: 0px !important;
 }
-.input:last-child .mdc-notched-outline__leading {
+.input:first-child .mdc-notched-outline__leading {
 	border-left: 1px solid rgba(0,0,0,.38) !important;
 	border-top-left-radius: 4px !important;
 	border-bottom-left-radius: 4px !important;
@@ -171,14 +171,14 @@ a[href]:hover, a[href]:focus {
 .mdc-select--outlined.mdc-select--disabled .mdc-notched-outline__leading, .mdc-select--outlined.mdc-select--disabled .mdc-notched-outline__notch, .mdc-select--outlined.mdc-select--disabled .mdc-notched-outline__trailing {
 	border-color: rgba(0,0,0,.06) !important;
 }
-.input:first-child .mdc-notched-outline__trailing {
+.input:last-child .mdc-notched-outline__trailing {
 	border-top-right-radius: 4px !important;
 	border-bottom-right-radius: 4px !important;
 }
-.input:not(last-child):not(.mdc-text-field--disabled):hover .mdc-notched-outline__leading {
+.input:not(first-child):not(.mdc-text-field--disabled):hover .mdc-notched-outline__leading {
 	border-left: 1px solid rgba(0, 169, 224, .87) !important;
 }
-.input:not(last-child):not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading {
+.input:not(first-child):not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading {
 	border-left: 2px solid rgba(0, 169, 224, .87) !important;
 }
 .mdc-button-toggle {
@@ -203,7 +203,6 @@ a[href]:hover, a[href]:focus {
 .controller {
 	width: 100%;
 	display: flex;
-	flex-direction: row-reverse;
 	margin-bottom: 10px;
 }
 .layout {

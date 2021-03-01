@@ -29,12 +29,11 @@ gwt {
     gwtVersion = "2.9.0"
     minHeapSize = "1024M"
     maxHeapSize = "2048M"
-    jsInteropExports.setGenerate(true)
 }
 gwtDev {
     jvmArgs "-XX:ReservedCodeCacheSize=512M","-javaagent:lombok-1.18.16.jar=ECJ"
-    port 12345
-    codeServerPort 12346
+    port 22345
+    codeServerPort 22346
     war file("src/main/webapp")
 }
 war {

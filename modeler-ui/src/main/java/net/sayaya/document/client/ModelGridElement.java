@@ -27,9 +27,9 @@ public final class ModelGridElement extends HTMLElementBuilder<HTMLDivElement, M
 		this.sheet = sheet;
 		this.config = config;
 		layout();
-		value(new Model(), new Model(), new Model());
 	}
 	private void layout() {
+		sheet.style("border: 1px solid #ddd;");
 		SheetSelectableSingle.header(sheet);
 		config.columns(
 				ColumnBuilder.string(COLUMN_KEY.MODEL_NAME.name()).width(400).name("Model").build(),
@@ -39,6 +39,14 @@ public final class ModelGridElement extends HTMLElementBuilder<HTMLDivElement, M
 	}
 	public ModelGridElement value(Model... values) {
 		sheet.values(Arrays.stream(values).map(ModelGridElement::map).toArray(Data[]::new));
+		return that();
+	}
+	public ModelGridElement append(Model model) {
+		sheet.append(map(model));
+		return that();
+	}
+	public ModelGridElement delete(Model model) {
+		sheet.delete(model.name()).refresh();
 		return that();
 	}
 	private static Data map(Model value) {

@@ -1,0 +1,101 @@
+version: "3.8"
+services:
+  zookeeper1:
+    image: zookeeper
+    restart: always
+    hostname: zookeeper1
+    container_name: zookeeper1
+    ports:
+      - 22181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
+  #zookeeper2:
+  #  image: zookeeper
+  #  restart: always
+  #  hostname: zookeeper2
+  #  container_name: zookeeper2
+  #  ports:
+  #    - 22181:2181
+  #  environment:
+  #    ZOO_MY_ID: 2
+  #    ZOO_SERVERS: server.1=zookeeper1:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zookeeper3:2888:3888;2181
+  #  depends_on:
+  #    - zookeeper1
+  #zookeeper3:
+  #  image: zookeeper
+  #  restart: always
+  #  hostname: zookeeper3
+  #  container_name: zookeeper3
+  #  ports:
+  #    - 32181:2181
+  #  environment:
+  #    ZOO_MY_ID: 3
+  #    ZOO_SERVERS: server.1=zookeeper1:2888:3888;2181 server.2=zookeeper2:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
+  #  depends_on:
+  #    - zookeeper1
+  zoonavigator:
+    image: elkozmon/zoonavigator
+    container_name: zoonavigator
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    depends_on:
+      - zookeeper1
+  kafka1:
+    image: wurstmeister/kafka
+    restart: on-failure
+    hostname: kafka1
+    container_name: kafka1
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_CREATE_TOPICS: "models:1:1"
+      JMX_PORT: 9093
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.rmi.port=9093
+    ports:
+      - 9092:9092
+      - 9093:9093
+    depends_on:
+      - zookeeper1
+  kafka_manager:
+    image: hlebalbau/kafka-manager
+    restart: unless-stopped
+    hostname: kafka-manager
+    container_name: kafka-manager
+    ports:
+      - 9010:9000
+    environment:
+      ZK_HOSTS: "zookeeper1:2181"
+      APPLICATION_SECRET: "random-secret"
+      KM_ARGS: -Djava.net.preferIPv4Stack=true
+    depends_on:
+      - kafka1
+  cassandra1:
+    image: cassandra:latest
+    hostname: cassandra1
+    container_name: cassandra1
+    ports:
+      - 17000:7000
+      - 19042:9042
+    volumes:
+      - /D/data/cassandra1/commitlog:/var/lib/cassandra/commitlog
+      - /D/data/cassandra1/hints:/var/lib/cassandra/hints
+      - /D/data/cassandra1/data:/var/lib/cassandra/data
+      - /D/data/cassandra1/saved_caches:/var/lib/cassandra/saved_caches
+      - /D/data/cassandra1/logs:/var/log/cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cluster
+      - CASSANDRA_NUM_TOKENS=8
+      - CASSANDRA_DC=dc1
+      #    - CASSANDRA_LISTEN_ADDRESS=192.168.1.2
+      #    - CASSANDRA_BROADCAST_ADDRESS=192.168.1.122
+      #    - CASSANDRA_BROADCAST_RPC_ADDRESS=192.168.1.122
+      - CASSANDRA_RACK=rack0
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - MAX_HEAP_SIZE=1G
+      - HEAP_NEWSIZE=200M

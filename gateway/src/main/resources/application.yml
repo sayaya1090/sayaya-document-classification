@@ -12,14 +12,10 @@ spring:
       routes:
         - id: model-service
           uri: lb://model-service
-          filters:
-            - StripPrefix=1
           predicates:
             - Path=/models/**
         - id: test-service
           uri: lb://test-service
-          filters:
-            - StripPrefix=1
           predicates:
             - Path=/test/**
 server:
