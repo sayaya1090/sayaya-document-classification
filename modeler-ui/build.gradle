@@ -24,6 +24,9 @@ dependencies {
     implementation("org.projectlombok:lombok:1.18.16")
     annotationProcessor("org.projectlombok:lombok:1.18.16")
 }
+ext {
+    lombok = project.configurations.annotationProcessor.find { it.name.startsWith("lombok") }
+}
 gwt {
     gwt.modules "net.sayaya.document.Modeler"
     gwtVersion = "2.9.0"
@@ -31,7 +34,7 @@ gwt {
     maxHeapSize = "2048M"
 }
 gwtDev {
-    jvmArgs "-XX:ReservedCodeCacheSize=512M","-javaagent:lombok-1.18.16.jar=ECJ"
+    jvmArgs "-XX:ReservedCodeCacheSize=512M","-javaagent:${lombok}=ECJ"
     port 22345
     codeServerPort 22346
     war file("src/main/webapp")
