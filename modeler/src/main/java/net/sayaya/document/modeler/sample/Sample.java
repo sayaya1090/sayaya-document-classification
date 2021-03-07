@@ -1,11 +1,9 @@
 package net.sayaya.document.modeler.sample;
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
-import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.cassandra.core.mapping.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,6 +24,8 @@ public class Sample {
 	long size;
 	@Column
 	int page;
+	@Column
+	String thumbnail;
 	@Column
 	Boolean conformity;
 }

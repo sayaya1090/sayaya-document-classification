@@ -56,12 +56,12 @@ public class ModelHandler {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-	@Bean
-	public Supplier<Flux<String>> publish() {
+	@Bean("publish-model")
+	public Supplier<Flux<String>> publishModel() {
 		return ()-> publisher.asFlux().map(this::map);
 	}
-	@Bean
-	public Consumer<String> broadcast() {
+	@Bean("broadcast-model")
+	public Consumer<String> broadcastModel() {
 		return c->subscriber.tryEmitNext(map(c));
 	}
 }

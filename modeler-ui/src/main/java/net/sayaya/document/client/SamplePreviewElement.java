@@ -58,10 +58,6 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 	}
 	private void drop(DragEvent event) {
 		input.element().files = event.dataTransfer.files;
-		for(File f: input.element().files.asList()) {
-			bag.add(SamplePreviewItemElement.instance(f));
-		}
-		contentState = ContentState.NOT_EMPTY;
 		SampleApi.uploadSamples(model, new FormData(form));
 		updateStyle();
 		//fire(event);
@@ -75,6 +71,20 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 				if(samples!=null && samples.length > 0) Arrays.stream(samples).map(SamplePreviewItemElement::instance).forEach(bag::add);
 				else contentState = ContentState.EMPTY;
 				updateStyle();
+			});
+			SampleApi.listenCreateSample(this.model.name(), sample->{
+				bag.add(SamplePreviewItemElement.instance(sample));
+				contentState = ContentState.NOT_EMPTY;
+				updateStyle();
+			});
+			SampleApi.listenProcessingSample(this.model.name(), sample->{
+
+			});
+			SampleApi.listenAnalyzedSample(this.model.name(), sample->{
+
+			});
+			SampleApi.listenDeleteSample(this.model.name(), sample->{
+
 			});
 		} else {
 			bag.element().innerHTML = "";

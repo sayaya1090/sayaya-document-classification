@@ -7,6 +7,9 @@ import net.sayaya.document.data.Sample;
 public class SampleToDTO {
 	public Sample map(net.sayaya.document.modeler.sample.Sample entity) {
 		return new Sample().id(entity.id().toString())
-				.name(entity.name()).size(entity.size() + 0.0);
+				.model(entity.model())
+				.name(entity.name())
+				.size(entity.size())
+				.page(entity.page());
 	}
 }

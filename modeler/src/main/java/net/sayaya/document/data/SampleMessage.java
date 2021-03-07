@@ -7,15 +7,15 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
-@JsonDeserialize(builder = ModelMessage.ModelMessageBuilder.class)
-@Builder(builderClassName = "ModelMessageBuilder")
+@JsonDeserialize(builder = SampleMessage.SampleMessageBuilder.class)
+@Builder(builderClassName = "SampleMessageBuilder")
 @Value
 @Accessors(fluent = true)
-public class ModelMessage implements Serializable {
-	MessageType type;
-	Model data;
+public class SampleMessage implements Serializable {
+	SampleMessage.MessageType type;
+	Sample data;
 
 	public enum MessageType {
-		CREATE, LEARNING, LEARNED, DELETE
+		CREATE, PROCESSING, ANALYZED, DELETE
 	}
 }

@@ -10,13 +10,19 @@ spring:
         root: /sayaya-document-classification/services
     stream:
       function:
-        definition: publish;broadcast
-        bindings:
-          publish-out-0: models
-          broadcast-in-0: models
+        definition: publish-model;broadcast-model;publish-sample;broadcast-sample;analyze-sample
+      bindings:
+        publish-model-out-0.destination: models
+        broadcast-model-in-0.destination: models
+        publish-sample-out-0.destination: samples
+        broadcast-sample-in-0.destination: samples
+        analyze-sample-in-0:
+          destination: samples
+          group: analyze-samples
       kafka:
         binder:
           brokers: localhost
+          auto-add-partitions: true
   data:
     cassandra:
       contact-points: localhost
