@@ -1,7 +1,5 @@
 package net.sayaya.document.api;
 
-import elemental2.dom.Document;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.EventSource;
 import jsinterop.base.Js;
 import lombok.experimental.UtilityClass;
@@ -12,7 +10,7 @@ import static elemental2.core.Global.JSON;
 
 @UtilityClass
 public class ModelApi {
-	private String host = "http://localhost:12647";
+	private String host = "http://localhost";
 	public void findModels(Callback<Model[]> callback) {
 		// ProgressApi.open(true);
 		RequestApi.request(new RestApi().method(RestApi.Method.GET).url(host + "/models"), response->{
@@ -62,15 +60,6 @@ public class ModelApi {
 			if(deleteCallback!=null) deleteCallback.onSuccess(model);
 		});
 		return src;
-	}
-	public void findDocuments(String model, Callback<Document> callback) {
-
-	}
-	public void uploadDocuments() {
-
-	}
-	public void removeDocument(String name, String document) {
-
 	}
 	public void learn() {
 

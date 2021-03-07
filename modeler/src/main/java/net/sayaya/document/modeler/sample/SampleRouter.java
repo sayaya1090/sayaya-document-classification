@@ -21,7 +21,15 @@ public class SampleRouter {
 	public SampleRouter(SampleHandler handler) {this.handler = handler;}
 	@Bean
 	public RouterFunction<ServerResponse> documentRouterInstance() {
-		return route(POST("/{model}/samples"), this::uploadDocuments);
+		return route(GET("/models/{model}/samples"), this::findSamples)
+				.andRoute(POST("/models/{model}/samples"), this::uploadDocuments);
+	}
+	private Mono<ServerResponse> findSamples(ServerRequest request) {
+		String model = request.pathVariable("model");
+		return handler.list(model).collectList()
+				.flatMap(list->ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(list))
+				.switchIfEmpty(ServerResponse.noContent().build())
+				.onErrorResume(e->ServerResponse.badRequest().bodyValue(e.getMessage()));
 	}
 	private Mono<ServerResponse> uploadDocuments(ServerRequest request) {
 		String model = request.pathVariable("model");

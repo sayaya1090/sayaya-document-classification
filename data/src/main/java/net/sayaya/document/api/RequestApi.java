@@ -2,6 +2,7 @@ package net.sayaya.document.api;
 
 import elemental2.dom.Blob;
 import elemental2.dom.BlobPropertyBag;
+import elemental2.dom.FormData;
 import elemental2.dom.XMLHttpRequest;
 import lombok.experimental.UtilityClass;
 import net.sayaya.document.data.RestApi;
@@ -11,6 +12,9 @@ import java.util.Objects;
 @UtilityClass
 public class RequestApi {
 	public void request(RestApi api, Callback<String> callback) {
+		request(api, null, callback);
+	}
+	public void request(RestApi api, FormData form, Callback<String> callback) {
 		XMLHttpRequest request = new XMLHttpRequest();
 		request.open(Objects.requireNonNull(api.method()).name(), api.url(), true);
 		if(api.contentType()!=null) request.setRequestHeader("Content-Type", api.contentType());
@@ -30,7 +34,8 @@ public class RequestApi {
 			} else callback.onFailure(new RuntimeException(request.responseText));
 			return 0;
 		};
-		if(api.param()==null) request.send();
+		if(form!=null) request.send(form);
+		else if(api.param()==null) request.send();
 		else request.send(api.param());
 	}
 	public void download(RestApi api, Callback<Blob> callback) {

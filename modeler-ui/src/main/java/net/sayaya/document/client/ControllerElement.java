@@ -16,7 +16,7 @@ public class ControllerElement extends HTMLElementBuilder<HTMLDivElement, Contro
 		super(e);
 		_this = e.css("controller");
 	}
-	public ControllerElement add(Button btn) {
+	public ControllerElement add(HtmlContentBuilder<?> btn) {
 		_this.add(btn);
 		return that();
 	}

@@ -6,5 +6,5 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface SampleRepository extends ReactiveCassandraRepository<Sample, String> {
-	<T> Flux<T> findByModel(String model, Class<T> clazz);
+	Flux<Sample> findByModel(String model);
 }

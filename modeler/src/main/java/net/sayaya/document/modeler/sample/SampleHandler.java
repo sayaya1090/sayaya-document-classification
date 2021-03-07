@@ -1,6 +1,8 @@
 package net.sayaya.document.modeler.sample;
 
+import net.sayaya.document.data.Model;
 import net.sayaya.document.data.Sample;
+import net.sayaya.document.modeler.model.ModelToDTO;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -17,6 +19,9 @@ public class SampleHandler {
 
 	public SampleHandler(SampleRepository repo) {this.repo = repo;}
 
+	public Flux<Sample> list(String model) {
+		return repo.findByModel(model).map(SampleToDTO::map);
+	}
 	public Flux<Sample> upload(String model, Flux<FilePart> files) {
 		return files.flatMap(part->this.toEntity(model, part))
 				.flatMap(repo::save)

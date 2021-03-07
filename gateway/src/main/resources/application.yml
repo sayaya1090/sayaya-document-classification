@@ -9,6 +9,16 @@ spring:
       discovery:
         root: /sayaya-document-classification/services
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
       routes:
         - id: model-service
           uri: lb://model-service
