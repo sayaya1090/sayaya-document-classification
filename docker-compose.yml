@@ -83,11 +83,11 @@ services:
       - 17000:7000
       - 19042:9042
     volumes:
-      - /D/data/cassandra1/commitlog:/var/lib/cassandra/commitlog
-      - /D/data/cassandra1/hints:/var/lib/cassandra/hints
-      - /D/data/cassandra1/data:/var/lib/cassandra/data
-      - /D/data/cassandra1/saved_caches:/var/lib/cassandra/saved_caches
-      - /D/data/cassandra1/logs:/var/log/cassandra
+      - /mnt/d/data/cassandra1/commitlog:/var/lib/cassandra/commitlog
+      - /mnt/d/data/cassandra1/hints:/var/lib/cassandra/hints
+      - /mnt/d/data/cassandra1/data:/var/lib/cassandra/data
+      - /mnt/d/data/cassandra1/saved_caches:/var/lib/cassandra/saved_caches
+      - /mnt/d/data/cassandra1/logs:/var/log/cassandra
     environment:
       - CASSANDRA_CLUSTER_NAME=cluster
       - CASSANDRA_NUM_TOKENS=8
