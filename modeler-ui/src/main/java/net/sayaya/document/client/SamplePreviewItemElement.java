@@ -3,16 +3,20 @@ package net.sayaya.document.client;
 import elemental2.dom.File;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLLabelElement;
-import net.sayaya.document.api.SampleApi;
 import net.sayaya.document.data.Sample;
 import net.sayaya.ui.CheckBox;
 import net.sayaya.ui.HTMLElementBuilder;
+import net.sayaya.ui.event.HasStateChangeHandlers;
 import org.jboss.elemento.HtmlContentBuilder;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.label;
 
-public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement, SamplePreviewItemElement> {
+public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement, SamplePreviewItemElement> implements HasStateChangeHandlers<SamplePreviewItemElement.PreviewItemState> {
 	public static SamplePreviewItemElement instance(File file) {
 		SamplePreviewItemElement elem = new SamplePreviewItemElement(div(), file.name);
 		elem.state = PreviewItemState.UPLOADING;
@@ -26,6 +30,7 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 	private final PageElement page = new PageElement();
 	private final HtmlContentBuilder<HTMLLabelElement> name = label();
 	private final HtmlContentBuilder<HTMLDivElement> _this;
+	private final Set<StateChangeEventListener<PreviewItemState>> listeners = new HashSet<>();
 	private Sample sample;
 	private PreviewItemState state;
 	private SamplePreviewItemElement(HtmlContentBuilder<HTMLDivElement> e, String fileName) {
@@ -34,9 +39,10 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 		layout();
 		name.add(fileName);
 		state = PreviewItemState.LOADING;
+		onStateChange(evt->draw());
 		iptSelect.onValueChange(evt->{
 			state = evt.value()?PreviewItemState.SELECTED:PreviewItemState.LOADED;
-			draw();
+			fireStateChangeEvent();
 		});
 	}
 	private void layout() {
@@ -45,8 +51,11 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 	private SamplePreviewItemElement sample(Sample sample) {
 		this.sample = sample;
 		state = PreviewItemState.LOADED;
-		draw();
+		fireStateChangeEvent();
 		return that();
+	}
+	public Sample sample() {
+		return sample;
 	}
 	private void draw() {
 		if(state == PreviewItemState.LOADED) {
@@ -69,7 +78,17 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 		return this;
 	}
 
-	private enum PreviewItemState {
+	@Override
+	public Collection<StateChangeEventListener<PreviewItemState>> listeners() {
+		return listeners;
+	}
+
+	@Override
+	public PreviewItemState state() {
+		return state;
+	}
+
+	enum PreviewItemState {
 		LOADING, LOADED, UPLOADING, SELECTED
 	}
 	private final static class PageElement extends HTMLElementBuilder<HTMLDivElement, PageElement> {

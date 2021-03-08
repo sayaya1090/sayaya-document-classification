@@ -1,5 +1,6 @@
 package net.sayaya.document.api;
 
+import elemental2.dom.DomGlobal;
 import elemental2.dom.EventSource;
 import elemental2.dom.FormData;
 import jsinterop.base.Js;
@@ -24,8 +25,8 @@ public class SampleApi {
 	public void uploadSamples(Model model, FormData files) {
 		RequestApi.request(new RestApi().method(RestApi.Method.POST).url(host + "/models/" + model.name() + "/samples"), files, response->{ });
 	}
-	public void removeDocument(String name, String document) {
-
+	public void removeSamples(Sample[] samples) {
+		for(Sample sample: samples) RequestApi.request(new RestApi().method(RestApi.Method.DELETE).url(host + "/models/" + sample.model() + "/samples/" + sample.id()), response->{});
 	}
 	private Callback<Sample> createCallback;
 	private Callback<Sample> processingCallback;
@@ -33,19 +34,23 @@ public class SampleApi {
 	private Callback<Sample> deleteCallback;
 	public void listenCreateSample(String model, Callback<Sample> callback) {
 		createCallback = callback;
-		if(listener==null) listener = listener(model);
+		if(listener!=null) listener.close();
+		listener = listener(model);
 	}
 	public void listenProcessingSample(String model, Callback<Sample> callback) {
 		processingCallback = callback;
-		if(listener==null) listener = listener(model);
+		if(listener!=null) listener.close();
+		listener = listener(model);
 	}
 	public void listenAnalyzedSample(String model, Callback<Sample> callback) {
 		analyzedCallback = callback;
-		if(listener==null) listener = listener(model);
+		if(listener!=null) listener.close();
+		listener = listener(model);
 	}
 	public void listenDeleteSample(String model, Callback<Sample> callback) {
 		deleteCallback = callback;
-		if(listener==null) listener = listener(model);
+		if(listener!=null) listener.close();
+		listener = listener(model);
 	}
 	private EventSource listener;
 	public EventSource listener(String model) {
@@ -66,6 +71,7 @@ public class SampleApi {
 			if(analyzedCallback!=null) analyzedCallback.onSuccess(sample);
 		});
 		src.addEventListener("DELETE", evt->{
+			DomGlobal.console.log(deleteCallback);
 			String json = (String)Js.asPropertyMap(evt).get("data");
 			Sample sample = (Sample) JSON.parse(json);
 			if(deleteCallback!=null) deleteCallback.onSuccess(sample);

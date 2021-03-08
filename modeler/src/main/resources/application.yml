@@ -32,5 +32,6 @@ spring:
       password: cassandra
       local-datacenter: dc1
       schema-action: CREATE_IF_NOT_EXISTS
+      request.timeout: 60s
 server:
   port: 0

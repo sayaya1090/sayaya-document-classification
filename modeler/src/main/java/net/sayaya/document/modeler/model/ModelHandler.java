@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 public class ModelHandler {
 	private final ModelRepository repo;
 	private final ObjectMapper OM;
-	private final Sinks.Many<ModelMessage> publisher = Sinks.many().multicast().directAllOrNothing();
+	private final Sinks.Many<ModelMessage> publisher = Sinks.many().multicast().directBestEffort();
 	private final Sinks.Many<ModelMessage> subscriber = Sinks.many().multicast().directBestEffort();
 	public ModelHandler(ModelRepository repo, ObjectMapper om) {
 		this.repo = repo;

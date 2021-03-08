@@ -3,18 +3,20 @@ package net.sayaya.document.client;
 import elemental2.dom.*;
 import net.sayaya.document.api.SampleApi;
 import net.sayaya.document.data.Model;
+import net.sayaya.document.data.Sample;
 import net.sayaya.ui.HTMLElementBuilder;
+import net.sayaya.ui.event.HasSelectionChangeHandlers;
+import org.gwtproject.event.shared.HandlerRegistration;
 import org.jboss.elemento.EventType;
 import org.jboss.elemento.HtmlContentBuilder;
 import org.jboss.elemento.InputBuilder;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 import static org.jboss.elemento.Elements.*;
 
-public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, SamplePreviewElement> {
+public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, SamplePreviewElement> implements HasSelectionChangeHandlers<Sample[]> {
 	public static SamplePreviewElement instance() {
 		return new SamplePreviewElement(div());
 	}
@@ -27,7 +29,7 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 			.element();
 	private final InputBuilder<HTMLInputElement> input = input("file").name("files");
 	private final HTMLFormElement form = form().style("display: none;").add(input).element();
-	private final HtmlContentBuilder<HTMLDivElement> bag = div().css("bag");
+	private final SamplePreviewItemBagElement bag = new SamplePreviewItemBagElement(div());
 	private ContentState contentState = ContentState.CLOSE;
 	private InputState inputState = InputState.NORMAL;
 	private Model model;
@@ -60,14 +62,13 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 		input.element().files = event.dataTransfer.files;
 		SampleApi.uploadSamples(model, new FormData(form));
 		updateStyle();
-		//fire(event);
 	}
 	public SamplePreviewElement model(@NotNull Optional<Model> model) {
 		if(model.isPresent()) {
 			contentState = ContentState.NOT_EMPTY;
 			this.model = model.get();
 			SampleApi.findSamples(this.model, samples-> {
-				bag.element().innerHTML = "";
+				bag.clear();
 				if(samples!=null && samples.length > 0) Arrays.stream(samples).map(SamplePreviewItemElement::instance).forEach(bag::add);
 				else contentState = ContentState.EMPTY;
 				updateStyle();
@@ -84,10 +85,13 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 
 			});
 			SampleApi.listenDeleteSample(this.model.name(), sample->{
-
+				bag.remove(sample);
+				if(bag.isEmpty()) contentState = ContentState.EMPTY;
+				else contentState = ContentState.NOT_EMPTY;
+				updateStyle();
 			});
 		} else {
-			bag.element().innerHTML = "";
+			bag.clear();
 			this.model = null;
 			contentState = ContentState.CLOSE;
 			updateStyle();
@@ -110,10 +114,72 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 		return this;
 	}
 
+	@Override
+	public Sample[] selection() {
+		return bag.selection();
+	}
+
+	@Override
+	public HandlerRegistration onSelectionChange(SelectionChangeEventListener<Sample[]> selectionChangeEventListener) {
+		return bag.onSelectionChange(selectionChangeEventListener);
+	}
+
 	private enum InputState {
 		NORMAL, OVER
 	}
 	private enum ContentState {
 		CLOSE, EMPTY, NOT_EMPTY
+	}
+	private final static class SamplePreviewItemBagElement extends HTMLElementBuilder<HTMLDivElement, SamplePreviewItemBagElement> implements HasSelectionChangeHandlers<Sample[]> {
+		private final HtmlContentBuilder<HTMLDivElement> _this;
+		private final Map<String, SamplePreviewItemElement> map = new HashMap<>();
+		private final Set<SamplePreviewItemElement> selected = new HashSet<>();
+		private SamplePreviewItemBagElement(HtmlContentBuilder<HTMLDivElement> e) {
+			super(e.css("bag"));
+			_this = e;
+		}
+		public SamplePreviewItemBagElement add(SamplePreviewItemElement child) {
+			_this.add(child);
+			child.onStateChange(evt->{
+				if(evt.state() == SamplePreviewItemElement.PreviewItemState.SELECTED) selected.add(child);
+				else selected.remove(child);
+				this.element().dispatchEvent(new CustomEvent("change"));
+			});
+			map.put(child.sample().id(), child);
+			return that();
+		}
+		public SamplePreviewItemBagElement remove(Sample smp) {
+			if(map.containsKey(smp.id())) {
+				map.get(smp.id()).element().remove();
+				map.remove(smp.id());
+			}
+			selected.removeIf(sel -> sel.sample().id().equals(smp.id()));
+			DomGlobal.console.log(selected.size());
+			return that();
+		}
+		public SamplePreviewItemBagElement clear() {
+			element().innerHTML = "";
+			map.clear();
+			selected.clear();
+			this.element().dispatchEvent(new CustomEvent("change"));
+			return that();
+		}
+		public boolean isEmpty() {
+			return map.isEmpty();
+		}
+		@Override
+		public SamplePreviewItemBagElement that() {
+			return this;
+		}
+
+		@Override
+		public Sample[] selection() {
+			return selected.stream().map(SamplePreviewItemElement::sample).toArray(Sample[]::new);
+		}
+
+		@Override
+		public HandlerRegistration onSelectionChange(SelectionChangeEventListener<Sample[]> selectionChangeEventListener) {
+			return onSelectionChange(this.element, selectionChangeEventListener);
+		}
 	}
 }

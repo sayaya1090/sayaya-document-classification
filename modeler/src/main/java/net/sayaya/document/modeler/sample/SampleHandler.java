@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 public class SampleHandler {
 	private final SampleRepository repo;
 	private final ObjectMapper OM;
-	private final Sinks.Many<SampleMessage> publisher = Sinks.many().multicast().directAllOrNothing();
+	private final Sinks.Many<SampleMessage> publisher = Sinks.many().multicast().directBestEffort();
 	private final Sinks.Many<SampleMessage> subscriber = Sinks.many().multicast().directBestEffort();
 	public SampleHandler(SampleRepository repo, ObjectMapper om) {this.repo = repo;
 		OM = om;

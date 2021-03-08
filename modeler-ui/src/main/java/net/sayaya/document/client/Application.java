@@ -4,7 +4,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import elemental2.dom.DomGlobal;
 import net.sayaya.document.api.ModelApi;
+import net.sayaya.document.api.SampleApi;
 import net.sayaya.document.data.Model;
+import net.sayaya.document.data.Sample;
 import net.sayaya.ui.Button;
 import net.sayaya.ui.Icon;
 import org.jboss.elemento.Elements;
@@ -34,11 +36,22 @@ public class Application implements EntryPoint {
 						.add(elemSamplePreview.css("layout-item"))));
 		elemModelGrid.onSelectionChange(evt->{
 			btnDeleteSample.element().style.display = null;
+			btnDeleteSample.enabled(false);
 			elemSamplePreview.model(evt.selection());
 			Scheduler.get().scheduleFixedDelay(()->{
 				elemModelGrid.refresh();
 				return false;
 			}, 200);
+		});
+		elemSamplePreview.onSelectionChange(evt->{
+			if(evt.selection()==null || evt.selection().length <= 0) btnDeleteSample.enabled(false);
+			else btnDeleteSample.enabled(true);
+		});
+		btnDeleteSample.onClick(evt->{
+			Sample[] samples = elemSamplePreview.selection();
+			if(samples == null || samples.length <= 0) return;
+			else if(!DomGlobal.confirm("Delete " + samples.length + " sample(s). Continue?")) return;
+			SampleApi.removeSamples(samples);
 		});
 		update();
 		ModelApi.listenCreateModel(elemModelGrid::append);
