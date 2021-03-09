@@ -5,6 +5,7 @@ import elemental2.promise.Promise;
 import jsinterop.base.Js;
 import lombok.experimental.UtilityClass;
 import net.sayaya.document.data.Model;
+import net.sayaya.ui.event.HasValueChangeHandlers;
 
 import static elemental2.core.Global.JSON;
 
@@ -25,41 +26,50 @@ public class ModelApi {
 		Request request = new Request(host + "/models/" + name, RequestInitBuilder.create().method(RequestMethod.DELETE).build());
 		DomGlobal.fetch(request);
 	}
-	private Callback<Model> createCallback;
-	private Callback<Model> updateCallback;
-	private Callback<Model> deleteCallback;
-	public void listenCreateModel(Callback<Model> callback) {
-		createCallback = callback;
-		if(listener==null) listener = listener();
+	public class ModelEvent {
+		private static EventSource listener;
+		public static ModelEvent listen() {
+			if(listener!=null) listener.close();
+			ModelEvent instance = new ModelEvent();
+			listener = instance.listener();
+			return instance;
+		}
+		private HasValueChangeHandlers.ValueChangeEventListener<Model> createCallback;
+		private HasValueChangeHandlers.ValueChangeEventListener<Model> updateCallback;
+		private HasValueChangeHandlers.ValueChangeEventListener<Model> deleteCallback;
+		public ModelEvent onCreate(HasValueChangeHandlers.ValueChangeEventListener<Model> callback) {
+			createCallback = callback;
+			return this;
+		}
+		public ModelEvent onUpdate(HasValueChangeHandlers.ValueChangeEventListener<Model> callback) {
+			updateCallback = callback;
+			return this;
+		}
+		public ModelEvent onDelete(HasValueChangeHandlers.ValueChangeEventListener<Model> callback) {
+			deleteCallback = callback;
+			return this;
+		}
+		private EventSource listener() {
+			EventSource src = new EventSource(host + "/models/changes");
+			src.addEventListener("CREATE", evt->{
+				String json = (String)Js.asPropertyMap(evt).get("data");
+				Model model = (Model) JSON.parse(json);
+				if(createCallback!=null) createCallback.handle(HasValueChangeHandlers.ValueChangeEvent.event(evt, model));
+			});
+			src.addEventListener("UPDATE", evt->{
+				String json = (String)Js.asPropertyMap(evt).get("data");
+				Model model = (Model) JSON.parse(json);
+				if(updateCallback!=null) updateCallback.handle(HasValueChangeHandlers.ValueChangeEvent.event(evt, model));
+			});
+			src.addEventListener("DELETE", evt->{
+				String json = (String)Js.asPropertyMap(evt).get("data");
+				Model model = (Model) JSON.parse(json);
+				if(deleteCallback!=null) deleteCallback.handle(HasValueChangeHandlers.ValueChangeEvent.event(evt, model));
+			});
+			return src;
+		}
 	}
-	public void listenUpdateModel(Callback<Model> callback) {
-		updateCallback = callback;
-		if(listener==null) listener = listener();
-	}
-	public void listenDeleteModel(Callback<Model> callback) {
-		deleteCallback = callback;
-		if(listener==null) listener = listener();
-	}
-	private EventSource listener;
-	public EventSource listener() {
-		EventSource src = new EventSource(host + "/models/changes");
-		src.addEventListener("CREATE", evt->{
-			String json = (String)Js.asPropertyMap(evt).get("data");
-			Model model = (Model) JSON.parse(json);
-			if(createCallback!=null) createCallback.onSuccess(model);
-		});
-		src.addEventListener("UPDATE", evt->{
-			String json = (String)Js.asPropertyMap(evt).get("data");
-			Model model = (Model) JSON.parse(json);
-			if(updateCallback!=null) updateCallback.onSuccess(model);
-		});
-		src.addEventListener("DELETE", evt->{
-			String json = (String)Js.asPropertyMap(evt).get("data");
-			Model model = (Model) JSON.parse(json);
-			if(deleteCallback!=null) deleteCallback.onSuccess(model);
-		});
-		return src;
-	}
+
 	public void learn() {
 
 	}

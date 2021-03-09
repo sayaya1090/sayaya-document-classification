@@ -54,8 +54,9 @@ public class Application implements EntryPoint {
 			SampleApi.removeSamples(samples);
 		});
 		update();
-		ModelApi.listenCreateModel(elemModelGrid::append);
-		ModelApi.listenDeleteModel(elemModelGrid::delete);
+		ModelApi.ModelEvent.listen()
+						   .onCreate(evt->elemModelGrid.append(evt.value()))
+						   .onDelete(evt->elemModelGrid.delete(evt.value()));
 	}
 	private void update() {
 		ModelApi.findModels().then(models->{

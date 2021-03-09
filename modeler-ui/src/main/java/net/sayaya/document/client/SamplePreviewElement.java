@@ -74,19 +74,16 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 				updateStyle();
 				return null;
 			});
-			SampleApi.listenCreateSample(this.model.name(), sample->{
-				bag.add(SamplePreviewItemElement.instance(sample));
+			SampleApi.SampleEvent.listen(this.model.name()).onCreate(evt->{
+				bag.add(SamplePreviewItemElement.instance(evt.value()));
 				contentState = ContentState.NOT_EMPTY;
 				updateStyle();
-			});
-			SampleApi.listenProcessingSample(this.model.name(), sample->{
+			}).onProcessing(evt->{
 
-			});
-			SampleApi.listenAnalyzedSample(this.model.name(), sample->{
+			}).onAnalyzed(evt->{
 
-			});
-			SampleApi.listenDeleteSample(this.model.name(), sample->{
-				bag.remove(sample);
+			}).onDelete(evt->{
+				bag.remove(evt.value());
 				if(bag.isEmpty()) contentState = ContentState.EMPTY;
 				else contentState = ContentState.NOT_EMPTY;
 				updateStyle();
