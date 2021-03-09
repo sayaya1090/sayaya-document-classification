@@ -58,7 +58,10 @@ public class Application implements EntryPoint {
 		ModelApi.listenDeleteModel(elemModelGrid::delete);
 	}
 	private void update() {
-		ModelApi.findModels(elemModelGrid::value);
+		ModelApi.findModels().then(models->{
+			elemModelGrid.value(models);
+			return null;
+		});
 	}
 	private void createModel() {
 		String name = DomGlobal.prompt("Input model name:");

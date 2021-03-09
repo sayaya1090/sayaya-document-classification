@@ -1,8 +1,7 @@
 package net.sayaya.document.api;
 
-import elemental2.dom.DomGlobal;
-import elemental2.dom.EventSource;
-import elemental2.dom.FormData;
+import elemental2.dom.*;
+import elemental2.promise.Promise;
 import jsinterop.base.Js;
 import lombok.experimental.UtilityClass;
 import net.sayaya.document.data.Model;
@@ -14,19 +13,18 @@ import static elemental2.core.Global.JSON;
 @UtilityClass
 public class SampleApi {
 	private String host = "http://localhost";
-	public void findSamples(Model model, Callback<Sample[]> callback) {
-		RequestApi.request(new RestApi().method(RestApi.Method.GET).url(host + "/models/" + model.name() + "/samples"), response->{
-			Sample[] result = (Sample[]) JSON.parse(response);
-			// Slice<Worklist> result = (Slice<Worklist>) JSON.parse(json);
-			callback.onSuccess(result);
-			// ProgressApi.close();
-		});
+	public Promise<Sample[]> findSamples(Model model) {
+		return DomGlobal.fetch(new Request(host + "/models/" + model.name() + "/samples"))
+						.then(Response::json)
+						.then(r-> Promise.resolve((Sample[])r));
 	}
 	public void uploadSamples(Model model, FormData files) {
-		RequestApi.request(new RestApi().method(RestApi.Method.POST).url(host + "/models/" + model.name() + "/samples"), files, response->{ });
+		DomGlobal.fetch(new Request(host + "/models/" + model.name() + "/samples",
+									RequestInitBuilder.create().method(RequestMethod.POST).body(files).build()));
 	}
 	public void removeSamples(Sample[] samples) {
-		for(Sample sample: samples) RequestApi.request(new RestApi().method(RestApi.Method.DELETE).url(host + "/models/" + sample.model() + "/samples/" + sample.id()), response->{});
+		for(Sample sample: samples) DomGlobal.fetch(new Request(host + "/models/" + sample.model() + "/samples/" + sample.id(),
+																RequestInitBuilder.create().method(RequestMethod.DELETE).build()));
 	}
 	private Callback<Sample> createCallback;
 	private Callback<Sample> processingCallback;

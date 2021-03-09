@@ -67,11 +67,12 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 		if(model.isPresent()) {
 			contentState = ContentState.NOT_EMPTY;
 			this.model = model.get();
-			SampleApi.findSamples(this.model, samples-> {
+			SampleApi.findSamples(this.model).then(samples->{
 				bag.clear();
 				if(samples!=null && samples.length > 0) Arrays.stream(samples).map(SamplePreviewItemElement::instance).forEach(bag::add);
 				else contentState = ContentState.EMPTY;
 				updateStyle();
+				return null;
 			});
 			SampleApi.listenCreateSample(this.model.name(), sample->{
 				bag.add(SamplePreviewItemElement.instance(sample));
