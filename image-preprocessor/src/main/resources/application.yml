@@ -1,8 +1,6 @@
 spring:
   application:
-    name: model-service
-  main:
-    web-application-type: reactive
+    name: image-preprocessor-service
   cloud:
     zookeeper:
       connect-string: localhost:22181
@@ -10,12 +8,12 @@ spring:
         root: /sayaya-document-classification/services
     stream:
       function:
-        definition: publish-model;broadcast-model;publish-sample;broadcast-sample;
+        definition: publish-sample;analyze-sample
       bindings:
-        publish-model-out-0.destination: models
-        broadcast-model-in-0.destination: models
         publish-sample-out-0.destination: samples
-        broadcast-sample-in-0.destination: samples
+        analyze-sample-in-0:
+          destination: samples
+          group: analyze-samples
       kafka:
         binder:
           brokers: localhost

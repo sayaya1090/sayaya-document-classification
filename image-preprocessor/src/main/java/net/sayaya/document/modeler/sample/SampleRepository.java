@@ -9,6 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface SampleRepository extends ReactiveCassandraRepository<Sample, String> {
-	Flux<Sample> findByModel(String model);
-	Mono<Void> deleteByModelAndId(String model, UUID id);
+	Mono<Sample> findByModelAndId(String model, UUID id);
 }

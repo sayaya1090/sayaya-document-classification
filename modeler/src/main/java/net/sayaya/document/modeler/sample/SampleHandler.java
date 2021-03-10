@@ -80,29 +80,4 @@ public class SampleHandler {
 	public Consumer<String> broadcastSample() {
 		return c->subscriber.tryEmitNext(map(c));
 	}
-	@Bean("analyze-sample")
-	public Consumer<String> analyzeSample() {
-		return c->{
-			SampleMessage msg = map(c);
-			if(msg.type() != SampleMessage.MessageType.CREATE) return;
-			Sample info = msg.data();
-			publisher.tryEmitNext(SampleMessage.builder().type(SampleMessage.MessageType.PROCESSING).data(info).build());
-			Path tmp = Path.of(info.model()).resolve(info.id());
-			repo.findByModelAndId(info.model(), UUID.fromString(info.id()))
-					.map(e->process(e, tmp))
-					.flatMap(repo::save)
-					.map(SampleToDTO::map)
-					.map(data->SampleMessage.builder().type(SampleMessage.MessageType.ANALYZED).data(data).build())
-					.doOnSuccess(publisher::tryEmitNext)
-					.subscribe();
-		};
-	}
-	private static net.sayaya.document.modeler.sample.Sample process(net.sayaya.document.modeler.sample.Sample entity, Path file) {
-		try {
-			Thread.sleep(5000);
-		} catch(InterruptedException e) {
-			e.printStackTrace();
-		}
-		return entity.size(file.toFile().length()).page(10).thumbnail("RRWEFWEF");
-	}
 }
