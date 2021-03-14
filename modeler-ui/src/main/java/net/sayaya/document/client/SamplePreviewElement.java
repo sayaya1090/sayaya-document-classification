@@ -157,7 +157,6 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 				map.remove(smp.id());
 			}
 			selected.removeIf(sel -> sel.sample().id().equals(smp.id()));
-			DomGlobal.console.log(selected.size());
 			return that();
 		}
 		public SamplePreviewItemBagElement clear() {

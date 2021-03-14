@@ -72,7 +72,6 @@ public class SampleApi {
 				if(analyzedCallback!=null) analyzedCallback.handle(HasValueChangeHandlers.ValueChangeEvent.event(evt, sample));
 			});
 			src.addEventListener("DELETE", evt->{
-				DomGlobal.console.log(deleteCallback);
 				String json = (String)Js.asPropertyMap(evt).get("data");
 				Sample sample = (Sample) JSON.parse(json);
 				if(deleteCallback!=null) deleteCallback.handle(HasValueChangeHandlers.ValueChangeEvent.event(evt, sample));
