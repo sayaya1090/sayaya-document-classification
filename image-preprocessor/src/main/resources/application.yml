@@ -30,3 +30,4 @@ spring:
       request.timeout: 60s
 server:
   port: 0
+  temp-directory: D:\data\models

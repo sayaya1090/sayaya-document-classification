@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sayaya.document.data.Sample;
 import net.sayaya.document.data.SampleMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class SampleHandler {
 	private final ObjectMapper OM;
 	private final Sinks.Many<SampleMessage> publisher = Sinks.many().multicast().directBestEffort();
 	private final Sinks.Many<SampleMessage> subscriber = Sinks.many().multicast().directBestEffort();
+	@Value("${server.temp-directory}")
+	private Path tmp;
 	public SampleHandler(SampleRepository repo, ObjectMapper om) {this.repo = repo;
 		OM = om;
 	}
@@ -40,7 +43,7 @@ public class SampleHandler {
 	}
 	private Mono<net.sayaya.document.modeler.sample.Sample> toEntity(String model, FilePart part) {
 		UUID id = UUID.randomUUID();
-		Path dir = Path.of(model);
+		Path dir = tmp.resolve(model);
 		try {
 			if(!dir.toFile().exists()) Files.createDirectories(dir);
 		} catch(IOException e) {

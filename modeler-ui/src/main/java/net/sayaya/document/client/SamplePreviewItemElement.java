@@ -1,6 +1,5 @@
 package net.sayaya.document.client;
 
-import elemental2.dom.File;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLLabelElement;
 import net.sayaya.document.data.Sample;
@@ -17,27 +16,21 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.label;
 
 public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement, SamplePreviewItemElement> implements HasStateChangeHandlers<SamplePreviewItemElement.PreviewItemState> {
-	public static SamplePreviewItemElement instance(File file) {
-		SamplePreviewItemElement elem = new SamplePreviewItemElement(div(), file.name);
-		elem.state = PreviewItemState.UPLOADING;
-		return elem;
-	}
 	public static SamplePreviewItemElement instance(Sample sample) {
-		return new SamplePreviewItemElement(div(), sample.name()).sample(sample);
+		return new SamplePreviewItemElement(div()).sample(sample);
 	}
 	private final CheckBox iptSelect = CheckBox.checkBox(false).css("select");
 	private final HtmlContentBuilder<HTMLDivElement> preview = div();
 	private final PageElement page = new PageElement();
-	private final HtmlContentBuilder<HTMLLabelElement> name = label();
+	private final HTMLLabelElement lblFileName = label().element();
 	private final HtmlContentBuilder<HTMLDivElement> _this;
 	private final Set<StateChangeEventListener<PreviewItemState>> listeners = new HashSet<>();
 	private Sample sample;
 	private PreviewItemState state;
-	private SamplePreviewItemElement(HtmlContentBuilder<HTMLDivElement> e, String fileName) {
+	private SamplePreviewItemElement(HtmlContentBuilder<HTMLDivElement> e) {
 		super(e.css("preview-item"));
 		_this = e;
 		layout();
-		name.add(fileName);
 		state = PreviewItemState.LOADING;
 		onStateChange(evt->draw());
 		iptSelect.onValueChange(evt->{
@@ -46,11 +39,11 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 		});
 	}
 	private void layout() {
-		_this.add(iptSelect).add(preview.add(page)).add(name);
+		_this.add(iptSelect).add(preview.add(page)).add(lblFileName);
 	}
-	private SamplePreviewItemElement sample(Sample sample) {
+	public SamplePreviewItemElement sample(Sample sample) {
 		this.sample = sample;
-		state = PreviewItemState.LOADED;
+		lblFileName.innerHTML = sample.name();
 		fireStateChangeEvent();
 		return that();
 	}
@@ -60,17 +53,29 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 	private void draw() {
 		if(state == PreviewItemState.LOADED) {
 			iptSelect.element().style.display = "";
-			page.style("");
+			css("loaded");
+			ncss("uploading", "loading", "selected");
+			page.thumbnail(sample.thumbnail());
 		} else if(state == PreviewItemState.SELECTED) {
 			iptSelect.element().style.display = "";
-			page.style("box-shadow: rgba(0, 0, 0, 0.23) 3px 3px 6px;");
+			css("selected");
+			ncss("loaded", "uploading", "loading");
 		} else if(state == PreviewItemState.LOADING) {
 			iptSelect.element().style.display = "none";
-			page.style("");
+			css("loading");
+			ncss("loaded", "uploading", "selected");
+			page.print("Processing...");
 		} else if(state == PreviewItemState.UPLOADING) {
 			iptSelect.element().style.display = "none";
-			page.style("");
+			css("uploading");
+			ncss("loaded", "loading", "selected");
+			page.print("Uploading...");
 		}
+	}
+	public SamplePreviewItemElement state(PreviewItemState state) {
+		this.state = state;
+		fireStateChangeEvent();
+		return that();
 	}
 
 	@Override
@@ -99,6 +104,16 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 		@Override
 		public PageElement that() {
 			return this;
+		}
+		private PageElement thumbnail(String thumbnail) {
+			this.element.innerHTML = null;
+			this.element.style.backgroundImage = "url(data:image/png;base64," + thumbnail + ")";
+			return that();
+		}
+		private PageElement print(String text) {
+			this.element.innerHTML = text;
+			this.element.style.background = null;
+			return that();
 		}
 	}
 }

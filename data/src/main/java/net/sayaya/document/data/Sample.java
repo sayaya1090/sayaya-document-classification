@@ -18,6 +18,7 @@ public final class Sample {
 	private String name;
 	private Double size;
 	private Double page;
+	private String thumbnail;
 
 	@JsOverlay
 	@JsIgnore

@@ -26,7 +26,7 @@ public class ModelApi {
 		Request request = new Request(host + "/models/" + name, RequestInitBuilder.create().method(RequestMethod.DELETE).build());
 		DomGlobal.fetch(request);
 	}
-	public class ModelEvent {
+	public static class ModelEvent {
 		private static EventSource listener;
 		public static ModelEvent listen() {
 			if(listener!=null) listener.close();

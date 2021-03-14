@@ -302,14 +302,48 @@ a[href]:hover, a[href]:focus {
 	height: 0;
 }
 .preview-item > label {
+	margin-top: 5px;
 	text-align: center;
 	width: 100%;
 	line-break: anywhere;
+	color: var(--mdc-theme-text-primary-on-background);
+	transition: color 120ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .preview-item .page {
 	width: 10em;
 	height: 14em;
 	border: 1px solid #ddd;
+	background-size: 10em;
 	box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 0px;
-	transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #ddd;
+	transition: color 120ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.uploading > label {
+	color: #ddd;
+}
+.uploading .page {
+	border: 1px dashed #ddd;
+}
+.loading > label {
+	color: #F99D32;
+}
+.loading .page {
+	color: #F99D32;
+	border: 1px solid #F99D32;
+}
+.loaded > label {
+
+}
+.loaded .page {
+
+}
+.selected > label {
+	color: var(--mdc-theme-secondary);
+}
+.selected .page {
+	border: 1px solid var(--mdc-theme-secondary);
+	box-shadow: rgba(0, 0, 0, 0.23) 3px 3px 6px;
 }

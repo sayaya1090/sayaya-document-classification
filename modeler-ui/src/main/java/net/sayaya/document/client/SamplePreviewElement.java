@@ -69,19 +69,21 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 			this.model = model.get();
 			SampleApi.findSamples(this.model).then(samples->{
 				bag.clear();
-				if(samples!=null && samples.length > 0) Arrays.stream(samples).map(SamplePreviewItemElement::instance).forEach(bag::add);
+				if(samples!=null && samples.length > 0) Arrays.stream(samples).map(SamplePreviewItemElement::instance)
+						.peek(e->e.state(SamplePreviewItemElement.PreviewItemState.LOADED))
+						.forEach(bag::add);
 				else contentState = ContentState.EMPTY;
 				updateStyle();
 				return null;
 			});
 			SampleApi.SampleEvent.listen(this.model.name()).onCreate(evt->{
-				bag.add(SamplePreviewItemElement.instance(evt.value()));
+				bag.add(SamplePreviewItemElement.instance(evt.value()).state(SamplePreviewItemElement.PreviewItemState.UPLOADING));
 				contentState = ContentState.NOT_EMPTY;
 				updateStyle();
 			}).onProcessing(evt->{
-
+				bag.get(evt.value().id()).ifPresent(elem->elem.sample(evt.value()).state(SamplePreviewItemElement.PreviewItemState.LOADING));
 			}).onAnalyzed(evt->{
-
+				bag.get(evt.value().id()).ifPresent(elem->elem.sample(evt.value()).state(SamplePreviewItemElement.PreviewItemState.LOADED));
 			}).onDelete(evt->{
 				bag.remove(evt.value());
 				if(bag.isEmpty()) contentState = ContentState.EMPTY;
@@ -145,6 +147,9 @@ public class SamplePreviewElement extends HTMLElementBuilder<HTMLDivElement, Sam
 			});
 			map.put(child.sample().id(), child);
 			return that();
+		}
+		public Optional<SamplePreviewItemElement> get(String id) {
+			return Optional.ofNullable(map.get(id));
 		}
 		public SamplePreviewItemBagElement remove(Sample smp) {
 			if(map.containsKey(smp.id())) {

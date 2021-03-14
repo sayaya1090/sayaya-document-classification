@@ -26,7 +26,7 @@ public class SampleApi {
 		for(Sample sample: samples) DomGlobal.fetch(new Request(host + "/models/" + sample.model() + "/samples/" + sample.id(),
 																RequestInitBuilder.create().method(RequestMethod.DELETE).build()));
 	}
-	public class SampleEvent {
+	public static class SampleEvent {
 		private static EventSource listener;
 		private HasValueChangeHandlers.ValueChangeEventListener<Sample> createCallback;
 		private HasValueChangeHandlers.ValueChangeEventListener<Sample> processingCallback;
@@ -38,7 +38,6 @@ public class SampleApi {
 			listener = instance.listener(model);
 			return instance;
 		}
-
 		public SampleEvent onCreate(HasValueChangeHandlers.ValueChangeEventListener<Sample> callback) {
 			createCallback = callback;
 			return this;

@@ -10,6 +10,7 @@ public class SampleToDTO {
 				.model(entity.model())
 				.name(entity.name())
 				.size(entity.size())
-				.page(entity.page());
+				.page(entity.page())
+				.thumbnail(entity.thumbnail());
 	}
 }
