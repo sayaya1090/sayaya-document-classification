@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 public class SampleHandler {
 	private final SampleRepository repo;
 	private final ObjectMapper OM;
-	private final Sinks.Many<SampleMessage> publisher = Sinks.many().multicast().directBestEffort();
+	private final Sinks.Many<SampleMessage> publisher = Sinks.many().multicast().directAllOrNothing();
 	private final Sinks.Many<SampleMessage> subscriber = Sinks.many().multicast().directBestEffort();
 	@Value("${server.temp-directory}")
 	private Path tmp;

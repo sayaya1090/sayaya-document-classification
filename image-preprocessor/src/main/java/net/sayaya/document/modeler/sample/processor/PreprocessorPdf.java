@@ -50,6 +50,7 @@ public class PreprocessorPdf implements Preprocessor {
 				sample.thumbnail(baos.toString());
 				baos.close();
 			}
+			doc.close();
 			return sample;
 		} catch(IOException e) {
 			e.printStackTrace();
