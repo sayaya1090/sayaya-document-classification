@@ -6,7 +6,7 @@ import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.bouncycastle.util.encoders.Base64Encoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,10 +16,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
-@Service
+@Component
 public class PreprocessorPdf implements Preprocessor {
 	private final static byte[] PDF_HEADER = new byte[]{0x25,0x50,0x44,0x46,0x2D};
-	private final static Base64Encoder encoder = new Base64Encoder();
+	private final static Base64Encoder ENCODER = new Base64Encoder();
 
 	@Override
 	public boolean chk(Sample sample, Path file) {
@@ -46,7 +46,7 @@ public class PreprocessorPdf implements Preprocessor {
 				var img = baos.toByteArray();
 				baos.close();
 				baos = new ByteArrayOutputStream();
-				encoder.encode(img, 0, img.length, baos);
+				ENCODER.encode(img, 0, img.length, baos);
 				sample.thumbnail(baos.toString());
 				baos.close();
 			}

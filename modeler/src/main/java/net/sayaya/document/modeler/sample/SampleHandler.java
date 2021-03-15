@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -23,8 +24,8 @@ import java.util.function.Supplier;
 public class SampleHandler {
 	private final SampleRepository repo;
 	private final ObjectMapper OM;
-	private final Sinks.Many<SampleMessage> publisher = Sinks.many().multicast().directAllOrNothing();
-	private final Sinks.Many<SampleMessage> subscriber = Sinks.many().multicast().directBestEffort();
+	private final Sinks.Many<SampleMessage> publisher = Sinks.many().unicast().onBackpressureBuffer();
+	private final Sinks.Many<SampleMessage> subscriber = Sinks.many().multicast().directAllOrNothing();
 	@Value("${server.temp-directory}")
 	private Path tmp;
 	public SampleHandler(SampleRepository repo, ObjectMapper om) {this.repo = repo;
@@ -50,7 +51,10 @@ public class SampleHandler {
 			throw new RuntimeException("Can't create directory:" + model);
 		}
 		Path tmp = dir.resolve(id.toString());
-		return part.transferTo(tmp).then(Mono.just(new net.sayaya.document.modeler.sample.Sample().id(id).model(model).name(part.filename())));
+		String fileName = new String(part.filename().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+		if(fileName.contains("/")) fileName = fileName.substring(fileName.indexOf("/"+1));
+		if(fileName.contains("\\")) fileName = fileName.substring(fileName.indexOf("\\"+1));
+		return part.transferTo(tmp).then(Mono.just(new net.sayaya.document.modeler.sample.Sample().id(id).model(model).name(fileName)));
 	}
 	public Mono<SampleMessage> remove(String model, String id) {
 		return repo.deleteByModelAndId(model, UUID.fromString(id))
