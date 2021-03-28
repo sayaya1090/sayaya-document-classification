@@ -18,12 +18,12 @@ class JsonConfig {
     @Bean
     fun objectMapper(): ObjectMapper {
         return Jackson2ObjectMapperBuilder.json()
-                .visibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .featuresToEnable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-                .featuresToEnable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-                .modules(KotlinModule(), JavaTimeModule())
-                .propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-                .build()
+            .visibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .featuresToEnable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+            .featuresToEnable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+            .modules(KotlinModule(), JavaTimeModule())
+            .propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+            .build()
     }
 }

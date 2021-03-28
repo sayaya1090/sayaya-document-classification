@@ -38,8 +38,6 @@ dependencies {
 
     implementation("io.springfox:springfox-boot-starter:3.+")
     implementation("io.springfox:springfox-swagger-ui")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
     testImplementation("org.apache.kafka:kafka-streams-test-utils")
