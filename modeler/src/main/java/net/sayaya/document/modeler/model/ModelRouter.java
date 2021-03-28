@@ -54,9 +54,9 @@ public class ModelRouter {
 	private Mono<ServerResponse> subscribeModel(ServerRequest request) {
 		return ServerResponse.ok().contentType(MediaType.TEXT_EVENT_STREAM)
 				.body(BodyInserters.fromServerSentEvents(handler.subscribe()
-						.map(msg->ServerSentEvent.builder(msg.data())
-								.event(msg.type().name())
-								.id(msg.data().name())
+						.map(msg->ServerSentEvent.builder(msg.getData())
+								.event(msg.getType().name())
+								.id(msg.getData().name())
 								.build())));
 	}
 }

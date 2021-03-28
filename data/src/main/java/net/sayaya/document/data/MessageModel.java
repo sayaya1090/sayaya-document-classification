@@ -5,13 +5,11 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-
-@JsonDeserialize(builder = ModelMessage.ModelMessageBuilder.class)
+@JsonDeserialize(builder = MessageModel.ModelMessageBuilder.class)
 @Builder(builderClassName = "ModelMessageBuilder")
 @Value
 @Accessors(fluent = true)
-public class ModelMessage implements Serializable {
+public class MessageModel {
 	MessageType type;
 	Model data;
 

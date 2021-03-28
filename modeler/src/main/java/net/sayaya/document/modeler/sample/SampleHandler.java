@@ -3,7 +3,7 @@ package net.sayaya.document.modeler.sample;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sayaya.document.data.Sample;
-import net.sayaya.document.data.SampleMessage;
+import net.sayaya.document.data.MessageSample;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.multipart.FilePart;
@@ -24,8 +24,8 @@ import java.util.function.Supplier;
 public class SampleHandler {
 	private final SampleRepository repo;
 	private final ObjectMapper OM;
-	private final Sinks.Many<SampleMessage> publisher = Sinks.many().unicast().onBackpressureBuffer();
-	private final Sinks.Many<SampleMessage> subscriber = Sinks.many().multicast().directAllOrNothing();
+	private final Sinks.Many<MessageSample> publisher = Sinks.many().unicast().onBackpressureBuffer();
+	private final Sinks.Many<MessageSample> subscriber = Sinks.many().multicast().directAllOrNothing();
 	@Value("${server.temp-directory}")
 	private Path tmp;
 	public SampleHandler(SampleRepository repo, ObjectMapper om) {this.repo = repo;
@@ -35,11 +35,11 @@ public class SampleHandler {
 	public Flux<Sample> list(String model) {
 		return repo.findByModel(model).map(SampleToDTO::map);
 	}
-	public Flux<SampleMessage> upload(String model, Flux<FilePart> files) {
+	public Flux<MessageSample> upload(String model, Flux<FilePart> files) {
 		return files.flatMap(part->this.toEntity(model, part))
 				.flatMap(repo::save)
 				.map(SampleToDTO::map)
-				.map(data-> SampleMessage.builder().type(SampleMessage.MessageType.CREATE).data(data).build())
+				.map(data->new MessageSample(MessageSample.MessageType.CREATE, data))
 				.doOnNext(publisher::tryEmitNext);
 	}
 	private Mono<net.sayaya.document.modeler.sample.Sample> toEntity(String model, FilePart part) {
@@ -56,25 +56,25 @@ public class SampleHandler {
 		if(fileName.contains("\\")) fileName = fileName.substring(fileName.indexOf("\\"+1));
 		return part.transferTo(tmp).then(Mono.just(new net.sayaya.document.modeler.sample.Sample().id(id).model(model).name(fileName)));
 	}
-	public Mono<SampleMessage> remove(String model, String id) {
+	public Mono<MessageSample> remove(String model, String id) {
 		return repo.deleteByModelAndId(model, UUID.fromString(id))
 				.then(Mono.just(new Sample().model(model).id(id)))
-				.map(data->SampleMessage.builder().type(SampleMessage.MessageType.DELETE).data(data).build())
+				.map(data->new MessageSample(MessageSample.MessageType.DELETE, data))
 				.doOnSuccess(publisher::tryEmitNext);
 	}
-	public Flux<SampleMessage> subscribe(String model) {
-		return subscriber.asFlux().filter(s->model.equals(s.data().model()));
+	public Flux<MessageSample> subscribe(String model) {
+		return subscriber.asFlux().filter(s->model.equals(s.getData().model()));
 	}
-	private String map(SampleMessage dto) {
+	private String map(MessageSample dto) {
 		try {
 			return OM.writeValueAsString(dto);
 		} catch(JsonProcessingException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-	private SampleMessage map(String json) {
+	private MessageSample map(String json) {
 		try {
-			return OM.readValue(json, SampleMessage.class);
+			return OM.readValue(json, MessageSample.class);
 		} catch(JsonProcessingException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}

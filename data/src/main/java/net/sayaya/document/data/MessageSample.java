@@ -5,11 +5,11 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
-@JsonDeserialize(builder = SampleMessage.SampleMessageBuilder.class)
+@JsonDeserialize(builder = MessageSample.SampleMessageBuilder.class)
 @Builder(builderClassName = "SampleMessageBuilder")
 @Value
 @Accessors(fluent = true)
-public class SampleMessage {
+public class MessageSample {
 	MessageType type;
 	Sample data;
 
