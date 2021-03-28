@@ -5,8 +5,8 @@ object SampleToDTO {
         return net.sayaya.document.data.Sample().id(entity.id.toString())
             .model(entity.model)
             .name(entity.name)
-            .size(entity.size)
-            .page(entity.page)
+            .size(if(entity.size!=null) entity.size!! else 0)
+            .page(if(entity.page!=null) entity.page!! else 0)
             .thumbnail(entity.thumbnail)
     }
 }

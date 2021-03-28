@@ -38,7 +38,7 @@ class SampleHandler(private val repo: SampleRepository, private val om: ObjectMa
         var fileName = String(part.filename().toByteArray(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8)
         if (fileName.contains("/")) fileName = fileName.substring(fileName.indexOf("/" + 1))
         if (fileName.contains("\\")) fileName = fileName.substring(fileName.indexOf("\\" + 1))
-        return part.transferTo(tmp).then(Mono.just(Sample(model, id).apply { name=fileName }))
+        return part.transferTo(tmp).then(Mono.just(Sample(model, id, fileName)))
     }
     fun remove(model: String, id: String): Mono<MessageSample> {
         return repo.deleteByModelAndId(model, UUID.fromString(id))

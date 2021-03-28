@@ -11,11 +11,11 @@ import java.util.*
 data class Sample (
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED) val model: String,
     @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED) val id: UUID,
-    @Column("create_time") val createTime: LocalDateTime = LocalDateTime.now()
+    @Column val name: String,
+    @Column("create_time") val createTime: LocalDateTime = LocalDateTime.now(),
 ) {
-    @Column var name: String? = null
-    @Column var size: Long = 0
-    @Column var page = 0
+    @Column var size: Long? = null
+    @Column var page: Int? = null
     @Column var thumbnail: String? = null
     @Column var conformity: Boolean? = null
 }
