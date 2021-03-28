@@ -7,14 +7,10 @@ import java.time.LocalDateTime
 
 
 @Table("model")
-class Model {
+data class Model (
     @PrimaryKey
-    @Column
-    var name: String? = null
-
-    @Column("create_time")
-    var createTime = LocalDateTime.now()
-
-    @Column
-    var cohesion: Double? = null
+    @Column val name: String,
+    @Column("create_time") val createTime: LocalDateTime = LocalDateTime.now()
+) {
+    @Column var cohesion: Double? = null
 }

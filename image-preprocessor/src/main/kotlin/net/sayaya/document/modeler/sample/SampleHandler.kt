@@ -29,22 +29,22 @@ class SampleHandler(
 
     @Bean("analyze-sample")
     fun analyzeSample(): Consumer<String> {
-        return Consumer { c: String ->
-            val (type, info) = map(c)
+        return Consumer { json ->
+            val (type, info) = map(json)
             if(type !== MessageSample.MessageType.CREATE) return@Consumer
             val path = tmp.resolve(info.model()).resolve(info.id())
             repo.findByModelAndId(info.model(), UUID.fromString(info.id()))
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(1)))
-                .map { e: Sample ->
+                .map { s ->
                     processors.stream()
-                        .filter { p: Preprocessor -> p.chk(e, path) }
-                        .peek { publisher.tryEmitNext(MessageSample(MessageSample.MessageType.PROCESSING, info)) }
+                        .filter { p -> p.chk(s, path) }
                         .findFirst()
-                        .map { p: Preprocessor -> p.process(e, path) }
+                        .apply { publisher.tryEmitNext(MessageSample(MessageSample.MessageType.PROCESSING, info)) }
+                        .map { p -> p.process(s, path) }
                         .orElseThrow { NullPointerException() }
                 }.doOnNext(repo::save)
                 .map(SampleToDTO::map)
-                .map { data: net.sayaya.document.data.Sample -> MessageSample(MessageSample.MessageType.ANALYZED, data) }
+                .map { data -> MessageSample(MessageSample.MessageType.ANALYZED, data) }
                 .doOnSuccess(publisher::tryEmitNext)
                 .onErrorStop()
                 .subscribe()

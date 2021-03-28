@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.file.Path
 import javax.imageio.ImageIO
+import kotlin.math.roundToInt
 
 @Component
 class PreprocessorImg : Preprocessor {
@@ -34,7 +35,7 @@ class PreprocessorImg : Preprocessor {
         sample.page = 1
         sample.size = file.toFile().length()
         val original = ImageIO.read(file.toFile())
-        val scaled = original.getScaledInstance(Math.round(THUMBNAIL_WIDTH).toInt(), Math.round(THUMBNAIL_WIDTH * original.height / original.width).toInt(), BufferedImage.SCALE_SMOOTH)
+        val scaled = original.getScaledInstance(THUMBNAIL_WIDTH.roundToInt(), (THUMBNAIL_WIDTH * original.height / original.width).roundToInt(), BufferedImage.SCALE_SMOOTH)
         val thumbnail = BufferedImage(scaled.getWidth(null), scaled.getHeight(null), BufferedImage.TYPE_INT_ARGB)
         thumbnail.graphics.drawImage(scaled, 0, 0, null)
         thumbnail.graphics.dispose()

@@ -36,13 +36,13 @@ class SampleRouter(private val handler: SampleHandler) {
     private fun uploadSamples(request: ServerRequest): Mono<ServerResponse?> {
         return handler.upload(request.pathVariable("model"),
             request.multipartData()
-                .map { i: MultiValueMap<String, Part> -> i["files"] }
+                .map { i -> i["files"] }
                 .flatMapMany { Flux.fromIterable(it) }
                 .cast(FilePart::class.java))
             .collectList()
             .flatMap { ServerResponse.ok().build() }
             .switchIfEmpty(ServerResponse.status(HttpStatus.CONFLICT).build())
-            .onErrorResume (ServerResponse.badRequest()::bodyValue)
+            .onErrorResume(ServerResponse.badRequest()::bodyValue)
     }
 
     private fun removeSamples(request: ServerRequest): Mono<ServerResponse?> {
@@ -50,7 +50,7 @@ class SampleRouter(private val handler: SampleHandler) {
         val id = request.pathVariable("id")
         return handler.remove(model, id)
             .flatMap { ServerResponse.ok().build() }
-            .onErrorResume (ServerResponse.badRequest()::bodyValue)
+            .onErrorResume(ServerResponse.badRequest()::bodyValue)
     }
 
     private fun subscribeSample(request: ServerRequest): Mono<ServerResponse?> {

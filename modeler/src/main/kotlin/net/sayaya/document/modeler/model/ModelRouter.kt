@@ -36,7 +36,7 @@ class ModelRouter(private val handler: ModelHandler) {
     private fun removeModels(request: ServerRequest): Mono<ServerResponse> {
         return handler.remove(request.pathVariable("id"))
             .flatMap { ServerResponse.ok().build() }
-            .onErrorResume { e: Throwable ->
+            .onErrorResume { e ->
                 e.printStackTrace()
                 ServerResponse.badRequest().bodyValue(e.message!!)
             }
@@ -44,7 +44,7 @@ class ModelRouter(private val handler: ModelHandler) {
     private fun subscribeModel(request: ServerRequest): Mono<ServerResponse> {
         return ServerResponse.ok().contentType(MediaType.TEXT_EVENT_STREAM)
             .body(BodyInserters.fromServerSentEvents(handler.subscribe().map {
-                    msg: MessageModel -> ServerSentEvent.builder<Model>(msg.data).event(msg.type.name).id(msg.data.name()).build()
+                    msg -> ServerSentEvent.builder<Model>(msg.data).event(msg.type.name).id(msg.data.name()).build()
             }))
     }
 }

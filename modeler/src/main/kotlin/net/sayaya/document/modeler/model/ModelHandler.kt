@@ -18,16 +18,16 @@ class ModelHandler(private val repo: ModelRepository, private val om: ObjectMapp
         return repo.findAll().map(ModelToDTO::map)
     }
     fun create(name: String): Mono<MessageModel> {
-        val model = Model().apply { this.name = name }
+        val model = Model(name)
         return repo.save(model).map(ModelToDTO::map)
             .map { data -> MessageModel(MessageModel.MessageType.CREATE, data) }
-            .doOnSuccess { t: MessageModel -> publisher.tryEmitNext(t) }
+            .doOnSuccess(publisher::tryEmitNext)
     }
     fun remove(name: String): Mono<MessageModel> {
         return repo.deleteById(name)
             .then(Mono.just(net.sayaya.document.data.Model().name(name).cntDocuments(0)))
             .map { data -> MessageModel(MessageModel.MessageType.DELETE, data) }
-            .doOnSuccess { t: MessageModel -> publisher.tryEmitNext(t) }
+            .doOnSuccess(publisher::tryEmitNext)
     }
     fun subscribe(): Flux<MessageModel> {
         return subscriber.asFlux()
@@ -40,10 +40,10 @@ class ModelHandler(private val repo: ModelRepository, private val om: ObjectMapp
     }
     @Bean("publish-model")
     fun publishModel(): Supplier<Flux<String>> {
-        return Supplier { publisher.asFlux().map { dto: MessageModel -> this.map(dto) } }
+        return Supplier { publisher.asFlux().map(this::map) }
     }
     @Bean("broadcast-model")
     fun broadcastModel(): Consumer<String> {
-        return Consumer { c: String -> subscriber.tryEmitNext(map(c)) }
+        return Consumer { json -> subscriber.tryEmitNext(map(json)) }
     }
 }

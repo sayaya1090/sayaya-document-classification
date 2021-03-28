@@ -8,19 +8,20 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Table("sample")
-class Sample {
+data class Sample (
     @PrimaryKeyColumn(name = "model", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    var model: String? = null
+    val model: String,
     @PrimaryKeyColumn(name = "id", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
-    var id = UUID.randomUUID()
+    val id: UUID,
     @Column("create_time")
-    var createTime = LocalDateTime.now()
+    val createTime: LocalDateTime = LocalDateTime.now()
+) {
     @Column
     var name: String? = null
     @Column
     var size: Long = 0
     @Column
-    var page = 0
+    val page = 0
     @Column
     var thumbnail: String? = null
     @Column

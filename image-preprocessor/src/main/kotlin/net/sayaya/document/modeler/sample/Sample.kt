@@ -8,22 +8,16 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Table("sample")
-class Sample(
+data class Sample (
     @PrimaryKeyColumn(name = "model", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    var model: String,
+    val model: String,
     @PrimaryKeyColumn(name = "id", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
-    var id: UUID
+    val id: UUID,
+    @Column("create_time") val createTime: LocalDateTime = LocalDateTime.now()
 ) {
-    @Column("create_time")
-    var createTime = LocalDateTime.now()
-    @Column
-    var name: String = ""
-    @Column
-    var size: Long = 0
-    @Column
-    var page = 0
-    @Column
-    var thumbnail: String? = null
-    @Column
-    var conformity: Boolean? = null
+    @Column val name: String = ""
+    @Column var size: Long = 0
+    @Column var page = 0
+    @Column var thumbnail: String? = null
+    @Column var conformity: Boolean? = null
 }
