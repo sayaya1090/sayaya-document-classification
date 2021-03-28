@@ -13,6 +13,9 @@ import java.util.concurrent.Executor
 @EnableAsync
 @EnableDiscoveryClient
 class Application {
+    fun main(args: Array<String>) {
+        runApplication<Application>(*args)
+    }
     fun getAsyncExecutor(): Executor {
         val executor = ThreadPoolTaskExecutor()
         executor.corePoolSize = 2
@@ -24,7 +27,4 @@ class Application {
     fun getAsyncUncaughtExceptionHandler(): AsyncUncaughtExceptionHandler {
         return SimpleAsyncUncaughtExceptionHandler()
     }
-}
-fun main(args: Array<String>) {
-    runApplication<Application>(*args)
 }
