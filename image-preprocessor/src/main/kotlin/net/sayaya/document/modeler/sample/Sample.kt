@@ -9,13 +9,11 @@ import java.util.*
 
 @Table("sample")
 data class Sample (
-    @PrimaryKeyColumn(name = "model", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    val model: String,
-    @PrimaryKeyColumn(name = "id", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
-    val id: UUID,
-    @Column("create_time") val createTime: LocalDateTime = LocalDateTime.now()
+    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED) val model: String,
+    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED) val id: UUID
 ) {
-    @Column val name: String = ""
+    @Column("create_time") var createTime: LocalDateTime = LocalDateTime.now()
+    @Column var name: String = ""
     @Column var size: Long = 0
     @Column var page = 0
     @Column var thumbnail: String? = null

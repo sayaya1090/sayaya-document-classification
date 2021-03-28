@@ -3,14 +3,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.4.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.4.32"
-    kotlin("kapt") version "1.4.32"
+    kotlin("jvm")
+    kotlin("kapt")
     kotlin("plugin.spring") version "1.4.32"
 }
 extra["springCloudVersion"] = "2020.0.2"
-
-group = "net.sayaya"
-version = "1.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 configurations {

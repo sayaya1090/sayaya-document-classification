@@ -314,6 +314,8 @@ a[href]:hover, a[href]:focus {
 	height: 14em;
 	border: 1px solid #ddd;
 	background-size: 10em;
+	background-repeat: no-repeat;
+	background-position: center center;
 	box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 0px;
 	display: flex;
 	justify-content: center;

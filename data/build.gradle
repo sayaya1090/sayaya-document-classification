@@ -4,6 +4,7 @@ plugins {
     id "maven-publish"
 }
 apply plugin: "gwt-base"
+apply plugin: "kotlin"
 
 group "net.sayaya"
 archivesBaseName = "document-classification-data"
@@ -21,8 +22,24 @@ dependencies {
     implementation("org.jboss.elemento:elemento-core:1.0.3")
     implementation("com.google.jsinterop:jsinterop-annotations:2.0.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.2")
+    implementation('com.fasterxml.jackson.module:jackson-module-kotlin')
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
     compileOnly("org.projectlombok:lombok:1.18.16")
     annotationProcessor('org.projectlombok:lombok:1.18.16')
+}
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "11"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "11"
+    }
 }
 
 gwt {

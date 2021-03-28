@@ -8,8 +8,7 @@ import java.time.LocalDateTime
 
 @Table("model")
 data class Model (
-    @PrimaryKey
-    @Column val name: String,
+    @PrimaryKey val name: String,
     @Column("create_time") val createTime: LocalDateTime = LocalDateTime.now()
 ) {
     @Column var cohesion: Double? = null

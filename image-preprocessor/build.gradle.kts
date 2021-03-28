@@ -1,15 +1,13 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("org.springframework.boot") version "2.4.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.4.32"
-    kotlin("kapt") version "1.4.32"
+    kotlin("jvm")
+    kotlin("kapt")
     kotlin("plugin.spring") version "1.4.32"
-
 }
 extra["springCloudVersion"] = "2020.0.2"
-
-group = "net.sayaya"
-version = "1.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 configurations {
@@ -33,8 +31,6 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
     implementation("org.apache.pdfbox:pdfbox:2.0.22")
     implementation("org.apache.pdfbox:pdfbox-tools:2.0.22")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("io.springfox:springfox-swagger-ui")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -45,5 +41,12 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+}
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        useIR = true
+        jvmTarget = "11"
+        freeCompilerArgs = listOf("-Xjsr305=strict")
     }
 }

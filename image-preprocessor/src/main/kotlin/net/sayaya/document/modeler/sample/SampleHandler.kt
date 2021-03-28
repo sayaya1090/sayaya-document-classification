@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.core.publisher.Sinks
 import reactor.util.retry.Retry
 import java.nio.file.Path
@@ -35,14 +36,13 @@ class SampleHandler(
             val path = tmp.resolve(info.model()).resolve(info.id())
             repo.findByModelAndId(info.model(), UUID.fromString(info.id()))
                 .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(1)))
-                .map { s ->
-                    processors.stream()
+                .map { s -> processors.stream()
                         .filter { p -> p.chk(s, path) }
                         .findFirst()
                         .apply { publisher.tryEmitNext(MessageSample(MessageSample.MessageType.PROCESSING, info)) }
                         .map { p -> p.process(s, path) }
-                        .orElseThrow { NullPointerException() }
-                }.doOnNext(repo::save)
+                        .orElseThrow { NullPointerException()  }
+                }.flatMap(repo::save)
                 .map(SampleToDTO::map)
                 .map { data -> MessageSample(MessageSample.MessageType.ANALYZED, data) }
                 .doOnSuccess(publisher::tryEmitNext)
