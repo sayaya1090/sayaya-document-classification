@@ -17,16 +17,22 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 
 @Service
-class SampleHandler(private val repo: SampleRepository, private val om: ObjectMapper, @Value("\${server.temp-directory}") private val tmp: Path) {
+class SampleHandler(
+    private val repo: SampleRepository,
+    private val om: ObjectMapper,
+    private val mapper: SampleToDTO,
+    @Value("\${server.temp-directory}")
+    private val tmp: Path
+) {
     private val publisher = Sinks.many().unicast().onBackpressureBuffer<MessageSample>()
     private val subscriber = Sinks.many().multicast().directAllOrNothing<MessageSample>()
     fun list(model: String): Flux<net.sayaya.document.data.Sample> {
-        return repo.findByModel(model).map(SampleToDTO::map)
+        return repo.findByModel(model).map(mapper::toSample)
     }
     fun upload(model: String, files: Flux<FilePart>): Flux<MessageSample> {
         return files.flatMap { part -> toEntity(model, part)}
             .flatMap(repo::save)
-            .map(SampleToDTO::map)
+            .map(mapper::toSample)
             .map { data -> MessageSample(MessageSample.MessageType.CREATE, data) }
             .doOnNext(publisher::tryEmitNext)
     }

@@ -1,12 +1,14 @@
 package net.sayaya.document.modeler.sample
 
-object SampleToDTO {
-    fun map(entity: Sample): net.sayaya.document.data.Sample {
-        return net.sayaya.document.data.Sample().id(entity.id.toString())
-            .model(entity.model)
-            .name(entity.name)
-            .size(if(entity.size!=null) entity.size!! else 0)
-            .page(if(entity.page!=null) entity.page!! else 0)
-            .thumbnail(entity.thumbnail)
+import org.mapstruct.Mapper
+import org.mapstruct.NullValueMappingStrategy
+import org.mapstruct.ReportingPolicy
+import java.util.*
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, nullValueMappingStrategy= NullValueMappingStrategy.RETURN_DEFAULT)
+interface SampleToDTO {
+    fun toSample(entity: Sample): net.sayaya.document.data.Sample
+    @JvmDefault fun map(id: UUID): String {
+        return id.toString()
     }
 }

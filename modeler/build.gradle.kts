@@ -33,6 +33,9 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
     implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
 
+    implementation("org.mapstruct:mapstruct:1.+")
+    kapt("org.mapstruct:mapstruct-processor:1.+")
+
     implementation("io.springfox:springfox-boot-starter:3.+")
     implementation("io.springfox:springfox-swagger-ui")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -49,7 +52,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         useIR = true
         jvmTarget = "11"
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=compatibility")
     }
 }
 tasks.withType<Test> {

@@ -29,9 +29,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-cassandra-reactive")
     implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
     implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
-    implementation("org.apache.pdfbox:pdfbox:2.0.22")
-    implementation("org.apache.pdfbox:pdfbox-tools:2.0.22")
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("org.apache.pdfbox:pdfbox:2.+")
+    implementation("org.apache.pdfbox:pdfbox-tools:2.+")
+    implementation("org.mapstruct:mapstruct:1.+")
+    kapt("org.mapstruct:mapstruct-processor:1.+")
+    implementation("io.springfox:springfox-boot-starter:3.+")
     implementation("io.springfox:springfox-swagger-ui")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
@@ -47,6 +49,6 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         useIR = true
         jvmTarget = "11"
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=compatibility")
     }
 }

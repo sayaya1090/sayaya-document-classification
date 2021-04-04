@@ -2,6 +2,7 @@ package net.sayaya.document.modeler.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import net.sayaya.document.data.MessageModel
+import org.mapstruct.factory.Mappers
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -11,15 +12,19 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 
 @Service
-class ModelHandler(private val repo: ModelRepository, private val om: ObjectMapper) {
+class ModelHandler(
+    private val repo: ModelRepository,
+    private val om: ObjectMapper,
+    private val mapper: ModelToDTO
+) {
     private val publisher = Sinks.many().unicast().onBackpressureBuffer<MessageModel>()
     private val subscriber = Sinks.many().multicast().directBestEffort<MessageModel>()
     fun list(): Flux<net.sayaya.document.data.Model> {
-        return repo.findAll().map(ModelToDTO::map)
+        return repo.findAll().map(mapper::toModel)
     }
     fun create(name: String): Mono<MessageModel> {
         val model = Model(name)
-        return repo.save(model).map(ModelToDTO::map)
+        return repo.save(model).map(mapper::toModel)
             .map { data -> MessageModel(MessageModel.MessageType.CREATE, data) }
             .doOnSuccess(publisher::tryEmitNext)
     }

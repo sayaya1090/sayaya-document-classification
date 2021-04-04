@@ -19,8 +19,10 @@ import java.util.function.Supplier
 class SampleHandler(
     private val repo: SampleRepository,
     private val om: ObjectMapper,
+    private val mapper: SampleToDTO,
     private val processors: List<Preprocessor>,
-    @Value("\${server.temp-directory}") private val tmp: Path) {
+    @Value("\${server.temp-directory}") private val tmp: Path
+) {
     private val publisher: Sinks.Many<MessageSample> = Sinks.many().unicast().onBackpressureBuffer()
     @Bean("publish-sample")
     fun publishSample(): Supplier<Flux<String>> {
@@ -42,7 +44,7 @@ class SampleHandler(
                         .map { p -> p.process(s, path) }
                         .orElseThrow { NullPointerException()  }
                 }.flatMap(repo::save)
-                .map(SampleToDTO::map)
+                .map(mapper::toSample)
                 .map { data -> MessageSample(MessageSample.MessageType.ANALYZED, data) }
                 .doOnSuccess(publisher::tryEmitNext)
                 .onErrorStop()
