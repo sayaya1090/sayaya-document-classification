@@ -1,9 +1,9 @@
 plugins {
-    id "org.wisepersist.gwt" version "1.1.10"
+    id "org.wisepersist.gwt" version "1.1.12"
     id "java"
     id "war"
 }
-apply plugin: 'gwt'
+apply plugin: "gwt"
 
 group = "net.sayaya"
 version = "1.0"
@@ -18,11 +18,11 @@ dependencies {
     implementation project(":data")
     implementation("org.jboss.elemento:elemento-core:1.0.3")
     implementation("com.google.elemental2:elemental2-svg:1.1.0")
-    implementation('com.google.gwt:gwt-user:2.9.0')
-    implementation('com.google.gwt:gwt-dev:2.9.0')
-    implementation('net.sayaya:ui:3.0')
-    implementation("org.projectlombok:lombok:1.18.16")
-    annotationProcessor("org.projectlombok:lombok:1.18.16")
+    implementation("com.google.gwt:gwt-user:2.9.0")
+    implementation("com.google.gwt:gwt-dev:2.9.0")
+    implementation("net.sayaya:ui:3.1")
+    implementation("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.20")
 }
 ext {
     lombok = project.configurations.annotationProcessor.find { it.name.startsWith("lombok") }

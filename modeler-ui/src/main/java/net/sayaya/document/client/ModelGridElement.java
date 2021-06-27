@@ -5,8 +5,8 @@ import net.sayaya.document.data.Model;
 import net.sayaya.ui.HTMLElementBuilder;
 import net.sayaya.ui.event.HasSelectionChangeHandlers;
 import net.sayaya.ui.sheet.Data;
-import net.sayaya.ui.sheet.Sheet;
-import net.sayaya.ui.sheet.SheetSelectableSingle;
+import net.sayaya.ui.sheet.SheetElement;
+import net.sayaya.ui.sheet.SheetElementSelectableSingle;
 import net.sayaya.ui.sheet.column.ColumnBuilder;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.jboss.elemento.HtmlContentBuilder;
@@ -28,20 +28,20 @@ public final class ModelGridElement extends HTMLElementBuilder<HTMLDivElement, M
 		MODEL_NAME, COHESION, DOCUMENTS
 	}
 	private final HtmlContentBuilder<HTMLLabelElement> lblEmpty = label("Model is not present yet. Create models.").style("text-align: center; align-self: center; width: 100%;");
-	private final Sheet sheet;
-	private final Sheet.SheetConfiguration config;
+	private final SheetElement sheet;
+	private final SheetElement.SheetConfiguration config;
 	private final HtmlContentBuilder<HTMLDivElement> _this;
 	private final Map<String, Model> values = new HashMap<>();
 	private ModelGridElement(HtmlContentBuilder<HTMLDivElement> e) {
 		super(e.css("models"));
 		_this = e;
-		this.config = Sheet.builder();
+		this.config = SheetElement.builder();
 		this.sheet = config.build();
 
 		layout();
 	}
 	private void layout() {
-		SheetSelectableSingle.header(sheet);
+		SheetElementSelectableSingle.header(sheet);
 		config.columns(
 				ColumnBuilder.string(COLUMN_KEY.MODEL_NAME.name()).width(400).name("Model").build(),
 				ColumnBuilder.string(COLUMN_KEY.COHESION.name()).width(80).name("Cohesion").build(),

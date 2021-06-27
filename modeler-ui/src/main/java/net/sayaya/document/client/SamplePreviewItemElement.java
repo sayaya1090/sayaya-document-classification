@@ -3,7 +3,7 @@ package net.sayaya.document.client;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLLabelElement;
 import net.sayaya.document.data.Sample;
-import net.sayaya.ui.CheckBox;
+import net.sayaya.ui.CheckBoxElement;
 import net.sayaya.ui.HTMLElementBuilder;
 import net.sayaya.ui.event.HasStateChangeHandlers;
 import org.jboss.elemento.HtmlContentBuilder;
@@ -19,7 +19,7 @@ public class SamplePreviewItemElement extends HTMLElementBuilder<HTMLDivElement,
 	public static SamplePreviewItemElement instance(Sample sample) {
 		return new SamplePreviewItemElement(div()).sample(sample);
 	}
-	private final CheckBox iptSelect = CheckBox.checkBox(false).css("select");
+	private final CheckBoxElement iptSelect = CheckBoxElement.checkBox(false).css("select");
 	private final HtmlContentBuilder<HTMLDivElement> preview = div();
 	private final PageElement page = new PageElement();
 	private final HTMLLabelElement lblFileName = label().element();

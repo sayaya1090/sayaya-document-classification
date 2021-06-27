@@ -7,8 +7,8 @@ import net.sayaya.document.api.ModelApi;
 import net.sayaya.document.api.SampleApi;
 import net.sayaya.document.data.Model;
 import net.sayaya.document.data.Sample;
-import net.sayaya.ui.Button;
-import net.sayaya.ui.Icon;
+import net.sayaya.ui.ButtonElement;
+import net.sayaya.ui.IconElement;
 import org.jboss.elemento.Elements;
 
 import static org.jboss.elemento.Elements.div;
@@ -18,11 +18,11 @@ public class Application implements EntryPoint {
 	private final ControllerElement elemController = ControllerElement.instance();
 	private final ModelGridElement elemModelGrid = ModelGridElement.instance();
 	private final SamplePreviewElement elemSamplePreview = SamplePreviewElement.instance();
-	private final Button btnNewModel = Button.outline().css("button").text("New Model").before(Icon.icon("add_circle"));
-	private final Button btnDeleteModel = Button.outline().css("button").text("Delete Model").before(Icon.icon("delete"));
-	private final Button btnSaveModel = Button.outline().css("button").text("Save Model").before(Icon.icon("save"));
-	private final Button btnLearnModel = Button.outline().css("button").text("Learn").before(Icon.icon("smart_toy"));
-	private final Button btnDeleteSample = Button.outline().css("button").text("Delete Sample").before(Icon.icon("delete")).style("display: none;");
+	private final ButtonElement btnNewModel = ButtonElement.outline().css("button").text("New Model").before(IconElement.icon("add_circle"));
+	private final ButtonElement btnDeleteModel = ButtonElement.outline().css("button").text("Delete Model").before(IconElement.icon("delete"));
+	private final ButtonElement btnSaveModel = ButtonElement.outline().css("button").text("Save Model").before(IconElement.icon("save"));
+	private final ButtonElement btnLearnModel = ButtonElement.outline().css("button").text("Learn").before(IconElement.icon("smart_toy"));
+	private final ButtonElement btnDeleteSample = ButtonElement.outline().css("button").text("Delete Sample").before(IconElement.icon("delete")).style("display: none;");
 	@Override
 	public void onModuleLoad() {
 		btnNewModel.onClick(evt->createModel());

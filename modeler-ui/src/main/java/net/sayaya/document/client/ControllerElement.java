@@ -1,7 +1,7 @@
 package net.sayaya.document.client;
 
 import elemental2.dom.HTMLDivElement;
-import net.sayaya.ui.Button;
+import net.sayaya.ui.ButtonElement;
 import net.sayaya.ui.HTMLElementBuilder;
 import org.jboss.elemento.HtmlContentBuilder;
 
